@@ -1,0 +1,38 @@
+---
+title: "(la weá que sea que vayamos a hacer con la base culiá)"
+subtitle: "EYP2435 - Análisis Multivariado"
+format: 
+  pdf: 
+    include-in-header: 
+      text: |
+        \usepackage{amsmath}
+        \usepackage{float}
+    colorlinks: true
+    geometry:
+      - top=20mm
+      - left=20mm
+      - right=20mm
+      - heightrounded
+    fig-pos: "H"
+author: 
+  - name: "Sebastián Celaya"
+  - name: "Camila Echeverría"
+crossref:
+  fig-title: Figura
+  fig-prefix: Figura
+  tbl-title: Tabla
+  tbl-prefix: Tabla
+tbl-cap-location: bottom
+---
+
+# Introducción
+
+# Descripción de los datos
+
+# Metodologías
+
+# Resultados
+
+# Conclusión
+
+En conclusión, el Emiliano vale pico, pero no tanto como Aravena.

@@ -1,0 +1,43 @@
+---
+title: "Examen, problema 1"
+subtitle: "EYP2435 - Análisis Multivariado"
+format: 
+  pdf: 
+    include-in-header: 
+      text: |
+        \usepackage{amsmath}
+        \usepackage{float}
+    colorlinks: true
+    geometry:
+      - top=20mm
+      - left=20mm
+      - right=20mm
+      - heightrounded
+    fig-pos: "H"
+author: 
+  - name: "Sebastián Celaya"
+  - name: "Camila Echeverría"
+crossref:
+  fig-title: Figura
+  fig-prefix: Figura
+  tbl-title: Tabla
+  tbl-prefix: Tabla
+tbl-cap-location: bottom
+---
+
+```{r, include = FALSE}
+library(tidyverse)
+
+datos <- rio::import(here::here("Pregunta 1/UNData.csv"))
+```
+
+
+Datos de naciones Unidas, UN. Los datos en el archivo `UNData`, en canvas contiene algunas variables, entre ellas _ppgdp_, el producto nacional bruto por persona de 2009 en dólares estadounidenses, _fertility_, la tasa de natalidad por cada 100 mujeres en la población en el año 2009, _lifeExp_ esperanza de vida y _pctUrban_ porcentaje de población urbana; además de dos variables cualitativas, región y grupo. Los datos son para 199 localidades, en su mayoría Países miembros de la ONU, pero también para otras áreas como Hong Kong que no son países independientes.
+
+a) Haga un análisis exploratorio de los datos. Escriba sus conclusiones.
+b) Suponga que se desea analizar el efecto de las otras variables disponibles en _(fertility_, _lifeEXP)_. Para esto, proponga un modelo estadístico y verifique si es adecuado. Usando algunas herramientas de inferencia estadística, responda si existe efecto de las otras variables sobre _(fertility_, _lifeEXP)_. Escriba sus conclusiones.
+
+## Solución a)
+
+
+## Solución b)
