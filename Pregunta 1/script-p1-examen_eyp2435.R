@@ -116,4 +116,17 @@ datos %>% filter(group == "other") %>%
 
 # Efecto de las otras variables -------------------------------------------
 
+modelito <- lm(cbind(fertility, lifeExpF) ~ ., datos[,-1])
+summary(modelito)
+summary(manova(modelito))
 
+modelito2 <- lm(cbind(fertility, lifeExpF) ~ ., datos[,-c(1,3)])
+summary(modelito2)
+summary(manova(modelito2))
+
+
+datos1 <- datos %>% filter(region != "NorthAtlantic")
+
+modelito3 <- lm(cbind(fertility, lifeExpF) ~ ., datos1[,-c(1,3)])
+summary(modelito3)
+summary(manova(modelito3))
