@@ -118,15 +118,24 @@ datos %>% filter(group == "other") %>%
 
 modelito <- lm(cbind(fertility, lifeExpF) ~ ., datos[,-1])
 summary(modelito)
-summary(manova(modelito))
+summary(manova(modelito), test = "Pillai")
+summary(manova(modelito), test = "Wilks")
+summary(manova(modelito), test = "Hotelling-Lawley")
+summary(manova(modelito), test = "Roy")
 
 modelito2 <- lm(cbind(fertility, lifeExpF) ~ ., datos[,-c(1,3)])
 summary(modelito2)
-summary(manova(modelito2))
+summary(manova(modelito2), test = "Pillai")
+summary(manova(modelito2), test = "Wilks")
+summary(manova(modelito2), test = "Hotelling-Lawley")
+summary(manova(modelito2), test = "Roy")
 
 
 datos1 <- datos %>% filter(region != "NorthAtlantic")
 
 modelito3 <- lm(cbind(fertility, lifeExpF) ~ ., datos1[,-c(1,3)])
 summary(modelito3)
-summary(manova(modelito3))
+summary(manova(modelito3), test = "Pillai")
+summary(manova(modelito3), test = "Wilks")
+summary(manova(modelito3), test = "Hotelling-Lawley")
+summary(manova(modelito3), test = "Roy")
