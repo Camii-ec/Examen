@@ -112,3 +112,8 @@ datos %>% filter(group == "oecd") %>%
 datos %>% filter(group == "other") %>% 
   select(-1,-3) %>% 
   GGally::ggpairs()
+
+
+# Efecto de las otras variables -------------------------------------------
+
+
