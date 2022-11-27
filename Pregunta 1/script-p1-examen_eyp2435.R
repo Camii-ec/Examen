@@ -99,3 +99,16 @@ datos %>% ggplot(aes(region, pctUrban)) +
        x = "Región",
        y = "Porcentaje")
 
+## Correlaciones por grupo ----
+
+datos %>% filter(group == "africa") %>% 
+  select(-1,-3) %>% 
+  GGally::ggpairs()
+
+datos %>% filter(group == "oecd") %>% 
+  select(-1,-3) %>% 
+  GGally::ggpairs()
+
+datos %>% filter(group == "other") %>% 
+  select(-1,-3) %>% 
+  GGally::ggpairs()

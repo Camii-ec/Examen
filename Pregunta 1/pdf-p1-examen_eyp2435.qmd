@@ -39,5 +39,129 @@ b) Suponga que se desea analizar el efecto de las otras variables disponibles en
 
 ## Solución a)
 
+En primer lugar, veremos cómo se comportan las variables continuas entre sí. Para esto, realizaremos un gráfico de correlación.
+
+```{r, echo = FALSE, message=FALSE}
+#| layout: [[-20,60,-20]]
+
+GGally::ggpairs(datos[,-c(1:3)])
+```
+
+Las dos relaciones más fuertes que encontramos son entre `lifeExpF` y `fertility` y `lifeExpF` y `pctUrban`. En los siguientes gráficos podemos ver más de cerca cómo se relacionan estas variables.
+
+```{r, echo = FALSE}
+#| layout: [[85,-10,85]]
+
+datos %>% ggplot(aes(lifeExpF, pctUrban)) +
+  geom_point(color = "#05cce5") + 
+  theme_bw() +
+  labs(title = "Relación entre esperanza de vida y % de población urbana",
+       x = "Expectativa de vida",
+       y = "Población urbana")
+
+datos %>% ggplot(aes(lifeExpF, fertility, fill = group)) +
+  geom_point(color = "#05cce5") + 
+  theme_bw() +
+  labs(title = "Relación entre esperanza de vida y tasa de natalidad",
+       x = "Expectativa de vida",
+       y = "Fertilidad")
+```
+
+Por un lado, mientras la correlación es de 0.601, el gráfico no muestra una relación completamente lineal entre la esperanza de vida y el porcentaje de población urbana. De hecho, en algún punto hasta pareciera una simple nube de puntos. Sin embargo, la relación con la tasa de natalidad sí se ve bastante fuerte y bastante marcada, lo que era de esperarse de una correlación de -0.824.
+
+Luego, debemos ver cómo se comportan las variables numéricas si las agrupamos por las variables categóricas. Para esto, comenzaremos realizando boxplots de `fertility`.
+
+```{r, echo = FALSE}
+#| layout: [[85,-10,85]]
+
+datos %>% ggplot(aes(group, fertility)) +
+  geom_boxplot(fill = "#05cce5") +
+  theme_bw() +
+  labs(title = "Tasa de natalidad según grupo",
+       x = "Grupo",
+       y = "Fertilidad")
+
+## Por región
+datos %>% ggplot(aes(region, fertility)) +
+  geom_boxplot(fill = "#05cce5") +
+  theme_bw() +
+  labs(title = "Tasa de natalidad según región",
+       x = "Región",
+       y = "Fertilidad")
+```
+
+Lo primero que salta a la luz es que África, tanto como región como grupo, posee las tasas de natalidad más altas, siendo su mediana superior al tercer cuartil del resto de los grupos o regiones, aunque presenta un rango intercuartílico bastante amplio. Además las regiones pertenecientes a los grupos `oecd` u otros presentan tasas bastante bajas en comparación.
+
+Un detalle que igual podría llamar la atención es la nula dispersión de la fertilidad de la región del Atlántico Norte. Esto se debe a que, según los datos, esta región está compuesta de un único país: Groenlandia.
+
+\newpage
+
+```{r, echo = FALSE}
+#| layout: [[85,-10,85]]
+
+## Por grupo
+datos %>% ggplot(aes(group, lifeExpF)) +
+  geom_boxplot(fill = "#05cce5") +
+  theme_bw() +
+  labs(title = "Esperanza de vida según grupo",
+                     x = "Grupo",
+                     y = "Expectativa")
+
+## Por región
+datos %>% ggplot(aes(region, lifeExpF)) +
+  geom_boxplot(fill = "#05cce5") +
+  theme_bw() +
+  labs(title = "Esperanza de vida según región",
+       x = "Región",
+       y = "Expectativa")
+```
+
+Luego, al realizar los gráficos de `lifeExpF`, podemos ver que la situación se revierte drásticamente. El grupo de la `oecd` es el que tiene mayor esperanza de vida, mientras que África es el que tiene la menor. En cuanto a las regiones, Norte América es la que lidera, seguida desde cerca por Europa y el Caribe.
+
+```{r, echo = FALSE}
+#| layout: [[85,-10,85]]
+
+## Por grupo
+datos %>% ggplot(aes(group, ppgdp)) +
+  geom_boxplot(fill = "#05cce5") +
+  theme_bw() +
+  labs(title = "Producto nacional bruto por persona según grupo",
+       x = "Grupo",
+       y = "PPGDP")
+
+## Por región
+datos %>% ggplot(aes(region, ppgdp)) +
+  geom_boxplot(fill = "#05cce5") +
+  theme_bw() +
+  labs(title = "Producto nacional bruto por persona según región",
+       x = "Región",
+       y = "PPGDP")
+```
+
+Con respecto al producto nacional, se repite el patrón de la esperanza nde vida: África posee el menor, mientras que el grupo de la oecd posee el mayor. Además, las medianas de América del Norte y Groenlandia son las más altas de entre las regiones. 
+
+Finalmente, podemos ver que el patrón se vuelve a repetir para el porcentaje de población urbana.
+
+```{r, echo = FALSE}
+#| layout: [[85,-10,85]]
+
+## Por grupo
+datos %>% ggplot(aes(group, pctUrban)) +
+  geom_boxplot(fill = "#05cce5") +
+  theme_bw() +
+  labs(title = "Porcentaje de población urbana según grupo",
+       x = "Grupo",
+       y = "Porcentaje")
+
+## Por región
+datos %>% ggplot(aes(region, pctUrban)) +
+  geom_boxplot(fill = "#05cce5") +
+  theme_bw() +
+  labs(title = "Porcentaje de población urbana según región",
+       x = "Región",
+       y = "Porcentaje")
+```
+
+De esta manera, a priori, pareciera que el grupo y/o región tiene un gran impacto en las distintas variables cuantitativas de la base de datos, lo que, a su vez, determina cómo se comportarán estas.
 
 ## Solución b)
