@@ -12,7 +12,7 @@ GGally::ggpairs(datos[,-c(1:3)])
 
 ## Por grupo
 datos %>% ggplot(aes(group, fertility)) +
-  geom_boxplot() +
+  geom_boxplot(fill = "#05cce5") +
   theme_bw() +
   labs(title = "Tasa de natalidad según grupo",
        x = "Grupo",
@@ -20,7 +20,7 @@ datos %>% ggplot(aes(group, fertility)) +
 
 ## Por región
 datos %>% ggplot(aes(region, fertility)) +
-  geom_boxplot() +
+  geom_boxplot(fill = "#05cce5") +
   theme_bw() +
   labs(title = "Tasa de natalidad según región",
        x = "Región",
@@ -33,7 +33,7 @@ datos %>% filter(region == "NorthAtlantic")
 
 ## Por grupo
 datos %>% ggplot(aes(group, lifeExpF)) +
-  geom_boxplot() +
+  geom_boxplot(fill = "#05cce5") +
   theme_bw() +
   labs(title = "Esperanza de vida según grupo",
                      x = "Grupo",
@@ -41,7 +41,7 @@ datos %>% ggplot(aes(group, lifeExpF)) +
 
 ## Por región
 datos %>% ggplot(aes(region, lifeExpF)) +
-  geom_boxplot() +
+  geom_boxplot(fill = "#05cce5") +
   theme_bw() +
   labs(title = "Esperanza de vida según región",
        x = "Región",
@@ -51,7 +51,7 @@ datos %>% ggplot(aes(region, lifeExpF)) +
 
 ## Por grupo
 datos %>% ggplot(aes(group, ppgdp)) +
-  geom_boxplot() +
+  geom_boxplot(fill = "#05cce5") +
   theme_bw() +
   labs(title = "Producto nacional bruto por persona según grupo",
        x = "Grupo",
@@ -59,7 +59,7 @@ datos %>% ggplot(aes(group, ppgdp)) +
 
 ## Por región
 datos %>% ggplot(aes(region, ppgdp)) +
-  geom_boxplot() +
+  geom_boxplot(fill = "#05cce5") +
   theme_bw() +
   labs(title = "Producto nacional bruto por persona según región",
        x = "Región",
@@ -69,7 +69,7 @@ datos %>% ggplot(aes(region, ppgdp)) +
 
 ## Por grupo
 datos %>% ggplot(aes(group, pctUrban)) +
-  geom_boxplot() +
+  geom_boxplot(fill = "#05cce5") +
   theme_bw() +
   labs(title = "Porcentaje de población urbana según grupo",
        x = "Grupo",
@@ -77,7 +77,7 @@ datos %>% ggplot(aes(group, pctUrban)) +
 
 ## Por región
 datos %>% ggplot(aes(region, pctUrban)) +
-  geom_boxplot() +
+  geom_boxplot(fill = "#05cce5") +
   theme_bw() +
   labs(title = "Porcentaje de población urbana según región",
        x = "Región",
