@@ -5,8 +5,24 @@ datos <- rio::import("Pregunta 1/UNData.csv")
 
 # Análisis exploratorio ---------------------------------------------------
 
-## Correlaciones entre las variables continuas 
+## Correlaciones entre las variables continuas ----
 GGally::ggpairs(datos[,-c(1:3)])
+
+## Dos correlaciones más altas
+
+datos %>% ggplot(aes(lifeExpF, pctUrban)) +
+  geom_point(color = "#e55605") + 
+  theme_bw() +
+  labs(title = "Relación entre esperanza de vida y porcentaje de población urbana",
+       x = "Expectativa de vida",
+       y = "Población urbana")
+
+datos %>% ggplot(aes(lifeExpF, fertility)) +
+  geom_point(color = "#e55605") + 
+  theme_bw() +
+  labs(title = "Relación entre esperanza de vida y tasa de natalidad",
+       x = "Expectativa de vida",
+       y = "Fertilidad")
 
 ## Fertilidad ----
 
@@ -82,3 +98,4 @@ datos %>% ggplot(aes(region, pctUrban)) +
   labs(title = "Porcentaje de población urbana según región",
        x = "Región",
        y = "Porcentaje")
+
