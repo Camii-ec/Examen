@@ -1,40 +1,19 @@
 # Librerias
 library(rio)
+library(tidyverse)
+library(tidyr)
+library(corrplot)
 
 # Carga de datos
 datos = rio::import("Casen 2017.dta")
 View(datos)
 
 nombres = colnames(datos)
-nombres == "numper"
 
+#######
 # Objetivos
 
-# La Encuesta Casen se plantea dos objetivos fundamentales: 
-#  ---Conocer periódicamente la situación de los hogares y de la población,
-#  especialmente de aquélla en situación de pobreza y de aquellos grupos
-#  definidos como prioritarios por la política social (infancia,juventud
-#  , adultos mayores, mujeres, pueblos indígenas, personas en situación 
-#  de discapacidad,   nacidos fuera de chile, entre otros),
-#  principalmente con relación a aspectos demográficos, de educación, 
-#  salud, vivienda, 
-#  trabajo e ingresos. En particular, estimar la magnitud de la pobreza 
-#  y la
-#  distribución del ingreso; identificar carencias y demandas de la   
-#  población en las áreas señaladas; y evaluar las distintas brechas que
-#  separan a los diferentes segmentos sociales y ámbitos territoriales.
-
-
-
 # POBREZA - GRUPOS PRIORITARIOS respecto a DEMOGRAFÍA, EDUCACIÓN, SALUD, VIVIENDA, TRABAJO e INGRESOS
-
-
-
-#  ----Estimar la cobertura, la focalización y la distribución del gasto   fiscal de los
-#  principales programas sociales de alcance nacional entre los hogares,
-# según su nivel de ingreso, para evaluar el impacto de este gasto en el
-#  ingreso de los hogares y en la distribución del mismo.
-
 
 
 # Cobestura y focalizacion de los gastos fiscales de programas sosciales nacionales según ingreso hogares y su distribución
@@ -43,7 +22,6 @@ nombres == "numper"
 # Descripción de variables:
 
 # pag 15 del documento?
-
 
 
 # Dentro de las variables más importantes tenemos las presentes en el objetivo que detallan la 
@@ -56,7 +34,10 @@ nombres == "numper"
 # 
 # De esto tenemos que analizar la 
 # pobreza (Situación de pobreza por ingresos)
+
 # y los grupos prioritarios (edad, r3. Pueblos indígenas, ¿pertenece usted o es descendiente de alguno de ellos?, y20e. Mes pasado Subsidio a la discapacidad mental?, r1a. ¿Cuál es la nacionalidad?)
+
+# GRUPOS PRIOTITARIOS (Ch4. Chequeo de situación de dependencia)
 
 
 # FORMA BONITA PARA EL TEXTO
@@ -65,4 +46,49 @@ nombres == "numper"
 
 
 
+
+
+
+
+
+
+
+
+# Variable de pobreza (Y):
+# pobreza_multi_4d    -    pobreza_multi_5d    -    pobreza
+
+# Modulo Educación   43 -> 101
+# Modulo Trabajo    102 -> 150
+# Modulo Ingresos   151 -> 304
+# Modulo Salud      305 -> 307
+# Modulo Vivienda   500 -> 573
+
+# Identificación de pobreza  767 y 784 -> 804
+
+datos1 = datos %>% mutate(SEXO = case_when(
+  sexo == 1 ~ "Hombre",
+  sexo == 2 ~ "Mujer"
+)) 
+datos1 = datos1 %>% mutate(POBRE = case_when(
+  pobreza_multi_5d == 0 ~ "No pobre",
+  pobreza_multi_5d == 1 ~ "Pobre"
+))
+
+datos1 = datos1 %>% drop_na(POBRE)
+
+
+datos1 %>% ggplot(aes(x = POBRE, y = ytot)) +
+  geom_boxplot(fill = "#05cce5") +
+  theme_bw() +
+  labs(title = "Esperanza de vida según región",
+       x = "Sexo",
+       y = "ingresos totales")
+
+colores = c("red", "blue")
+
+plot(datos1$s12, 
+     datos1$ytot, 
+     xlim = c(0, 10),
+     col = colores[factor(datos1$POBRE)],
+     pch = 19)
 
