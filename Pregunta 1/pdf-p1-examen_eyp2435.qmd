@@ -205,4 +205,57 @@ rownames(R_2) <- c("R^2", "R^2 ajustado")
 knitr::kable(R_2, digits = 3, align = "c")
 ```
 
-Analizando si el modelos es adecuado podemos observar que el $R^2$ se ajusta correctamente, en específico el $R^2$ de *lifeExpF* se ajusta de mejor forma que de *fertility*. Pero ambos son con un valor mayor que 0.5, lo que nos indica que efectivamente este modelo es adecuado para ambas variables.
+Analizando si el modelos es adecuado podemos observar que el $R^2$ se ajusta correctamente, en específico el $R^2$ de `lifeExpF` se ajusta de mejor forma que de `fertility`. Sin embargo, un detalle a tener en cuenta son los valores-p y los coeficientes del modelo, que en este caso son los siguientes (redondeados a 3 decimales):
+
+\newpage
+
+```{r, echo = FALSE}
+betas <- cbind(B1 = summary_mod$`Response fertility`$coefficients[,1],
+               B2 = summary_mod$`Response lifeExpF`$coefficients[,1])
+
+valorp <- cbind(p1 = summary_mod[["Response fertility"]][["coefficients"]][,4],
+               p2 = summary_mod[["Response lifeExpF"]][["coefficients"]][,4])
+
+knitr::kable(cbind(betas,valorp), digits = 3, align = "c")
+```
+
+De esta manera, podemos ver que tenemos coeficientes que no son significativos, por lo que el modelo no es necesariamente el más adecuado para esta situación. Así, implementaremos un método de selección stepwise que nos ayude a formar un buen modelo para esta situación.
+
+```{r, results='hide', message=FALSE}
+update_y.formula <- function(variables, fm) {
+  as.formula(paste0(variables, " ~ ", paste(all.vars(fm)[-1], collapse=" + ")))
+}
+
+step1 <- function(y, orig_fm){
+  fm <- update_y.formula(y, orig_fm)
+  step(lm(fm, data=datos[,-1]))
+}
+
+Y <- c("fertility", "lifeExpF")
+fm <- fertility ~ region + group + ppgdp + pctUrban
+modelo2.0 <- lapply(Y, step1, orig_fm=fm)
+```
+
+```{r, echo = FALSE}
+b1 <- lapply(modelo2.0, function(x) summary(x)$coefficients)[[1]][,1]
+b2 <- lapply(modelo2.0, function(x) summary(x)$coefficients)[[2]][,1]
+
+B1 <- c(b1[1:8], rep(0, 3), b1[9])
+B2 <- c(b2[1], rep(0,7), b2[2:5])
+
+betas <- cbind(B1, B2)
+rownames(betas)[9:11] <- c("groupoecd", "groupother", "ppgdp")
+
+P1 <- lapply(modelo2.0, function(x) summary(x)$coefficients)[[1]][,4]
+P2 <- lapply(modelo2.0, function(x) summary(x)$coefficients)[[2]][,4]
+
+p1 <- c(P1[1:8], rep(0, 3), P1[9])
+p2 <- c(P2[1], rep(0,7), P2[2:5])
+
+valorp <- cbind(p1, p2)
+rownames(valorp)[9:11] <- c("groupoecd", "groupother", "ppgdp")
+
+knitr::kable(cbind(betas,valorp), digits = 3, align = "c")
+```
+
+Donde ahora sí tenemos valores mucho más significativos. Así, podemos ver que efectivamente la región tiene una mayor importancia en la tasa de natalidad, mientras que el grupo es el que más influye en la esperanza de vida.
