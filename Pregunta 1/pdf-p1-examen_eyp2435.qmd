@@ -192,11 +192,17 @@ knitr::kable(muerte, digits = 3, align = "c")
 De esta manera, podemos ver que todos los estadísticos concuerdan en que la variable `region` es la que más aporta, lo que concuerda con el análisis exploratorio que hicimos anteriormente. Algo similar ocurre con la variable que menos aporta, pues todos señalan a la variable `group`. 
 
 ```{r}
-summary_mod <- summary(modelito)
-R_2 = cbind( c(summary_mod$`Response fertility`$r.squared, summary_mod$`Response fertility`$adj.r.squared), 
-             c(summary_mod$`Response lifeExpF`$r.squared, summary_mod$`Response lifeExpF`$adj.r.squared))
+summary_mod <- summary(modelo)
+```
 
-knitr::kable(R_2, digits = 3, aline = "c")
+```{r, echo = FALSE}
+R_2 <- cbind("fertility" = c(summary_mod$`Response fertility`$r.squared, 
+               summary_mod$`Response fertility`$adj.r.squared), 
+             "lifeExpF" = c(summary_mod$`Response lifeExpF`$r.squared, 
+               summary_mod$`Response lifeExpF`$adj.r.squared))
+rownames(R_2) <- c("R^2", "R^2 ajustado")
+
+knitr::kable(R_2, digits = 3, align = "c")
 ```
 
 Analizando si el modelos es adecuado podemos observar que el $R^2$ se ajusta correctamente, en específico el $R^2$ de *lifeExpF* se ajusta de mejor forma que de *fertility*. Pero ambos son con un valor mayor que 0.5, lo que nos indica que efectivamente este modelo es adecuado para ambas variables.
