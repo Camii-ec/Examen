@@ -189,7 +189,7 @@ muerte <- cbind("Pillai" = pillai,
 knitr::kable(muerte, digits = 3, align = "c")
 ```
 
-De esta manera, podemos ver que todos los estadísticos concuerdan en que la variable `region` es la que más aporta, lo que concuerda con el análisis exploratorio que hicimos anteriormente. Algo similar ocurre con la variable que menos aporta, pues todos señalan a la variable `group`. 
+De esta manera, podemos ver que todos los estadísticos concuerdan en que la variable `region` es la que más aporta, lo que concuerda con el análisis exploratorio que hicimos anteriormente. Algo similar ocurre con la variable que menos aporta, pues todos señalan a la variable `group`.
 
 ```{r}
 summary_mod <- summary(modelo)
