@@ -165,3 +165,29 @@ datos %>% ggplot(aes(region, pctUrban)) +
 De esta manera, a priori, pareciera que el grupo y/o región tiene un gran impacto en las distintas variables cuantitativas de la base de datos, lo que, a su vez, determina cómo se comportarán estas.
 
 ## Solución b)
+
+Para este inciso, generaremos una regresión lineal múltiple donde los vectores de respuesta serán `fertility` y `lifeExpF`. El resto de las variables, menos `localities` que actúa como un identificador, serán los predictores del modelo. 
+
+```{r}
+modelo <- lm(cbind(fertility, lifeExpF) ~ ., datos[,-1])
+```
+
+Ahora que tenemos el modelo, calculamos los estadísticos que nos servirán para probar la hipótesis $H_0$: $B_2=0$. Para esto, utilizamos la función `manova()` de `R`, la que nos permite calcular los distintos estadísticos que fueron mencionados en clases. Estos valores se ilustran en la siguiente tabla:
+
+```{r}
+pillai <- summary(manova(modelo), test = "Pillai")[["stats"]][-5,2]
+wilks <- summary(manova(modelo), test = "Wilks")[["stats"]][-5,2]
+hotelling <- summary(manova(modelo), test = "Hotelling-Lawley")[["stats"]][-5,2]
+roy <- summary(manova(modelo), test = "Roy")[["stats"]][-5,2]
+```
+
+```{r, echo = FALSE}
+muerte <- cbind("Pillai" = pillai,
+                "Wilks" = wilks,
+                "Hotelling-Lawley" = hotelling,
+                "Roy" = roy)
+
+knitr::kable(muerte, digits = 3, align = "c")
+```
+
+De esta manera, podemos ver que todos los estadísticos concuerdan en que la variable `region` es la que más aporta, lo que concuerda con el análisis exploratorio que hicimos anteriormente. Algo similar ocurre con la variable que menos aporta, pues todos señalan a la variable `group`.
