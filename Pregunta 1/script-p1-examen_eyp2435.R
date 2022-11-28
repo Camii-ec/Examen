@@ -148,3 +148,56 @@ summary_mod$`Response fertility`$adj.r.squared
 
 summary_mod$`Response lifeExpF`$r.squared
 summary_mod$`Response lifeExpF`$adj.r.squared
+
+# ¿Mejor modelo?
+
+update_y.formula <- function(variables, fm) {
+  as.formula(paste0(variables, " ~ ", paste(all.vars(fm)[-1], collapse=" + ")))
+}
+
+Y <- c("fertility", "lifeExpF")
+
+step1 <- function(y, orig_fm){
+  fm <- update_y.formula(y, orig_fm)
+  step(lm(fm, data=datos[,-1]))
+}
+
+fm <- fertility ~ region + group + ppgdp + pctUrban
+
+modelitopro <- lapply(Y, step1, orig_fm=fm)
+modelitopro
+
+lapply(modelitopro, function(x) summary(x)$coefficients)
+
+residuos <- cbind(as.numeric(lapply(modelitopro, function(x) summary(x)$residuals)[[1]]),
+                  as.numeric(lapply(modelitopro, function(x) summary(x)$residuals)[[2]]))
+
+sigma.gorro <- 1/nrow(datos) * t(residuos) %*% residuos
+
+x <- fastDummies::dummy_columns(datos[,-c(1,4,6)], remove_first_dummy = TRUE)
+x <- cbind(1, x[,5:13], x[,3]) %>% 
+  as.matrix()
+y <- cbind(datos$fertility, datos$lifeExpF)
+
+b1 <- lapply(modelo2.0, function(x) summary(x)$coefficients)[[1]][,1]
+b2 <- lapply(modelo2.0, function(x) summary(x)$coefficients)[[2]][,1]
+
+B1 <- c(b1[1:8], rep(0, 3), b1[9])
+B2 <- c(b2[1], rep(0,7), b2[2:5])
+
+betas <- cbind(B1, B2)
+
+sigma.colita <- 1/nrow(datos) * t(y-x%*%betas[1:11,])%*%(y-x%*%betas[1:11,])
+
+G <- nrow(datos) * sigma.gorro
+H <- nrow(datos) * (sigma.colita-sigma.gorro)
+
+pillai <- sum(diag(H%*%solve(H+G)))
+
+(199-2)/(2*199-2)*pillai^2
+
+qf(pillai, 10, 189)
+
+qf(0.95,10,189)
+
+lapply(modelo2.0, function(x) anova(x))
