@@ -139,3 +139,12 @@ summary(manova(modelito3), test = "Pillai")
 summary(manova(modelito3), test = "Wilks")
 summary(manova(modelito3), test = "Hotelling-Lawley")
 summary(manova(modelito3), test = "Roy")
+
+# Verificar que el modelo es adecuado
+
+summary_mod <- summary(modelito)
+summary_mod$`Response fertility`$r.squared
+summary_mod$`Response fertility`$adj.r.squared
+
+summary_mod$`Response lifeExpF`$r.squared
+summary_mod$`Response lifeExpF`$adj.r.squared

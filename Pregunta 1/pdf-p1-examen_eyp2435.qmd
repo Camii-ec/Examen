@@ -31,11 +31,10 @@ library(tidyverse)
 datos <- rio::import(here::here("Pregunta 1/UNData.csv"))
 ```
 
+Datos de naciones Unidas, UN. Los datos en el archivo `UNData`, en canvas contiene algunas variables, entre ellas *ppgdp*, el producto nacional bruto por persona de 2009 en dólares estadounidenses, *fertility*, la tasa de natalidad por cada 100 mujeres en la población en el año 2009, *lifeExp* esperanza de vida y *pctUrban* porcentaje de población urbana; además de dos variables cualitativas, región y grupo. Los datos son para 199 localidades, en su mayoría Países miembros de la ONU, pero también para otras áreas como Hong Kong que no son países independientes.
 
-Datos de naciones Unidas, UN. Los datos en el archivo `UNData`, en canvas contiene algunas variables, entre ellas _ppgdp_, el producto nacional bruto por persona de 2009 en dólares estadounidenses, _fertility_, la tasa de natalidad por cada 100 mujeres en la población en el año 2009, _lifeExp_ esperanza de vida y _pctUrban_ porcentaje de población urbana; además de dos variables cualitativas, región y grupo. Los datos son para 199 localidades, en su mayoría Países miembros de la ONU, pero también para otras áreas como Hong Kong que no son países independientes.
-
-a) Haga un análisis exploratorio de los datos. Escriba sus conclusiones.
-b) Suponga que se desea analizar el efecto de las otras variables disponibles en _(fertility_, _lifeEXP)_. Para esto, proponga un modelo estadístico y verifique si es adecuado. Usando algunas herramientas de inferencia estadística, responda si existe efecto de las otras variables sobre _(fertility_, _lifeEXP)_. Escriba sus conclusiones.
+a)  Haga un análisis exploratorio de los datos. Escriba sus conclusiones.
+b)  Suponga que se desea analizar el efecto de las otras variables disponibles en *(fertility*, *lifeEXP)*. Para esto, proponga un modelo estadístico y verifique si es adecuado. Usando algunas herramientas de inferencia estadística, responda si existe efecto de las otras variables sobre *(fertility*, *lifeEXP)*. Escriba sus conclusiones.
 
 ## Solución a)
 
@@ -138,7 +137,7 @@ datos %>% ggplot(aes(region, ppgdp)) +
        y = "PPGDP")
 ```
 
-Con respecto al producto nacional, se repite el patrón de la esperanza nde vida: África posee el menor, mientras que el grupo de la oecd posee el mayor. Además, las medianas de América del Norte y Groenlandia son las más altas de entre las regiones. 
+Con respecto al producto nacional, se repite el patrón de la esperanza nde vida: África posee el menor, mientras que el grupo de la oecd posee el mayor. Además, las medianas de América del Norte y Groenlandia son las más altas de entre las regiones.
 
 Finalmente, podemos ver que el patrón se vuelve a repetir para el porcentaje de población urbana.
 
@@ -166,7 +165,7 @@ De esta manera, a priori, pareciera que el grupo y/o región tiene un gran impac
 
 ## Solución b)
 
-Para este inciso, generaremos una regresión lineal múltiple donde los vectores de respuesta serán `fertility` y `lifeExpF`. El resto de las variables, menos `localities` que actúa como un identificador, serán los predictores del modelo. 
+Para este inciso, generaremos una regresión lineal múltiple donde los vectores de respuesta serán `fertility` y `lifeExpF`. El resto de las variables, menos `localities` que actúa como un identificador, serán los predictores del modelo.
 
 ```{r}
 modelo <- lm(cbind(fertility, lifeExpF) ~ ., datos[,-1])
@@ -190,4 +189,14 @@ muerte <- cbind("Pillai" = pillai,
 knitr::kable(muerte, digits = 3, align = "c")
 ```
 
-De esta manera, podemos ver que todos los estadísticos concuerdan en que la variable `region` es la que más aporta, lo que concuerda con el análisis exploratorio que hicimos anteriormente. Algo similar ocurre con la variable que menos aporta, pues todos señalan a la variable `group`.
+De esta manera, podemos ver que todos los estadísticos concuerdan en que la variable `region` es la que más aporta, lo que concuerda con el análisis exploratorio que hicimos anteriormente. Algo similar ocurre con la variable que menos aporta, pues todos señalan a la variable `group`. 
+
+```{r}
+summary_mod <- summary(modelito)
+R_2 = cbind( c(summary_mod$`Response fertility`$r.squared, summary_mod$`Response fertility`$adj.r.squared), 
+             c(summary_mod$`Response lifeExpF`$r.squared, summary_mod$`Response lifeExpF`$adj.r.squared))
+
+knitr::kable(R_2, digits = 3, aline = "c")
+```
+
+Analizando si el modelos es adecuado podemos observar que el $R^2$ se ajusta correctamente, en específico el $R^2$ de *lifeExpF* se ajusta de mejor forma que de *fertility*. Pero ambos son con un valor mayor que 0.5, lo que nos indica que efectivamente este modelo es adecuado para ambas variables.
