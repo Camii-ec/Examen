@@ -3,9 +3,14 @@ library(rio)
 library(tidyverse)
 library(tidyr)
 library(corrplot)
+library(ggforce)
+library(scales)
+library(raster)
+library(rworldxtra)
+library(sf)
 
 # Carga de datos
-datos = rio::import("Casen 2017.dta")
+datos = rio::import(file.choose())
 View(datos)
 
 nombres = colnames(datos)
@@ -91,4 +96,18 @@ plot(datos1$s12,
      xlim = c(0, 10),
      col = colores[factor(datos1$POBRE)],
      pch = 19)
+
+
+# Demografía --------------------------------------------------------------
+
+datos %>% filter(pobreza%in% c(1,2)) %>% 
+  ggplot(aes(as.factor(region), fill = as.factor(pobreza))) + 
+  geom_bar(position = "dodge")
+
+chile <- chilemapas::generar_regiones()  
+
+ggplot()+
+  geom_sf(data = chile) + 
+  coord_sf(xlim = c(-78,-66))
+
 
