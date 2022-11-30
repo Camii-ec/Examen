@@ -298,3 +298,49 @@ left_join(chile, p.region[which(p.region$educ==12),]) %>%
   ggplot() +
   geom_sf(aes(geometry = geometry, fill = prop)) + 
   coord_sf(xlim = c(-77, -65))
+
+
+# Análisis factorial ------------------------------------------------------
+
+library(psych)
+library(GPArotation)
+
+datitos <- datos[,c("numper", #personas en el hogar sin contar a la nana
+                   "esc", #escolaridad
+                   "educ", #nivel educacional
+                   "depen", #dependencia educacional
+                   "activ", #condición de actividad con respecto al trabajo
+                   "indmat", #cómo está la casa
+                   "hacinamiento",
+                   "pobreza", #pobreza por ingresos
+                   "pobreza_multi_4d", #pobreza 4-dimensional
+                   "pobreza_multi_5d", #pobreza 5-dimensional
+                   "dau" #decil autónomo nacional
+                   )]
+
+datazos <- na.omit(datitos)
+
+CorPears <- cor(datazos)
+
+corrplot::corrplot(CorPears)
+
+mod_Pears1 <- factanal(factors = 5, covmat = CorPears, n.obs = nrow(datazos),
+                       rotation = "bifactorT")
+
+mod_P <- fa(r = CorPears,
+            nfactors = 5,
+            rotate = "none",
+            n.obs = nrow(datazos),
+            fm = "ml")
+
+lambdas <- eigen(CorPears)$values[1]
+e <- eigen(CorPears)$vectors[,1]
+
+L <- sqrt(lambdas)*e
+l2 <- colSums(L^2)
+psi <- diag(rep(1,10)-L^2)
+
+S <- L%*%t(L)+psi
+
+corrplot::corrplot(S)
+
