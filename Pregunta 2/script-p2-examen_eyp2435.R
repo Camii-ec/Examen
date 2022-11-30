@@ -104,10 +104,129 @@ datos %>% filter(pobreza%in% c(1,2)) %>%
   ggplot(aes(as.factor(region), fill = as.factor(pobreza))) + 
   geom_bar(position = "dodge")
 
-chile <- chilemapas::generar_regiones()  
+rm <- chilemapas::mapa_comunas %>% 
+  filter(codigo_region == 13)
 
-ggplot()+
-  geom_sf(data = chile) + 
-  coord_sf(xlim = c(-78,-66))
+names(rm)[1] <- "comuna"
+
+rm %>% ggplot() +
+  geom_sf(aes(geometry = geometry))
 
 
+# Variables interesantes educación ----------------------------------------------------
+
+educacion <- datos %>% 
+  dplyr::select(-c(folio:hogar, expr:fecha_año)) %>% 
+  filter(region == "13") %>% 
+  dplyr::select(comuna, e1:e0) 
+
+
+##e1: sabe leer y escribir (1-sí, 2-lee, 3-escribe, 4-ninguno)
+##e6a: nivel educacional más alto o actual(1-ninguno, 2-sala cuna, 3-jardín, 4-kinder, 5-educación diferencial, 6-primaria (sistema antiguo), 7-básica, 8-humanidades (sistema antiguo), 9-media, 10-técnica(s.a), 11-tp, 12-técnico incompleto, 13-técnico, 14-profesional incompleto, 15-profesional, 16-postgrado incompleto, 17-postgrado)
+
+educacion <- educacion[is.na(educacion$e1)==FALSE,] %>% 
+  dplyr::select(comuna, e1, e6a) %>% 
+  filter(e1 != 9, e6a != 99) 
+# Eliminamos personas que no responden/no saben
+
+cuenta.e1 <- educacion %>% count(comuna, e1)
+personas.comuna <- educacion %>% count(comuna) %>% 
+  mutate(comuna = as.character(comuna))
+
+e1.1 <- cuenta.e1 %>% 
+  filter(e1 == 1) %>% 
+  mutate(comuna = as.character(comuna)) %>% 
+  dplyr::select(comuna, n)
+
+e1.1 <- left_join(e1.1, personas.comuna, by = "comuna")
+
+e1.1 <- e1.1 %>% mutate(prop.e1 = n.x/n.y) %>% 
+  dplyr::select(comuna, prop.e1)
+
+e1.2 <- educacion %>% 
+  filter(e1 != 1) %>% 
+  mutate(comuna = as.character(comuna)) %>% 
+  count(comuna) 
+
+e1.2 <- left_join(e1.2, personas.comuna, by = "comuna")
+e1.2 <- e1.2 %>% mutate(prop.analfabetismo = n.x/n.y) %>% 
+  dplyr::select(comuna, prop.analfabetismo)
+
+# Proporción de personas que leen por comuna
+left_join(rm, e1.1, by = "comuna") %>% 
+  ggplot() +
+  geom_sf(aes(geometry = geometry, fill = prop.e1*100))
+
+# Proporción de personas que presentan algún grado de analfabetismo por comuna
+left_join(rm, e1.2, by = "comuna") %>% 
+  ggplot() +
+  geom_sf(aes(geometry = geometry, fill = prop.analfabetismo*100))
+
+e6a <- educacion %>% 
+  mutate(comuna=as.character(comuna), e6a = as.factor(e6a), e1 = as.factor(e1))
+
+pro.o.mas <- e6a %>% 
+  filter(e6a %in% c("15", "16, 17")) %>% 
+  count(comuna)
+
+pro.o.mas <- left_join(pro.o.mas, personas.comuna, by = "comuna") %>% 
+  mutate(prop = n.x/n.y) %>% 
+  dplyr::select(comuna, prop)
+
+# Proporción de personas con nivel de educación profesional o superior según comuna
+left_join(rm, pro.o.mas, by = "comuna") %>% 
+  ggplot() +
+  geom_sf(aes(geometry = geometry, fill = prop*100))
+
+## Comuna y nivel de educación podrían ser interesantes para ver qué pasa con el nivel de ingresos o pobreza
+
+# Relación con variables de trabajo ------------------------------------------
+
+trabajo <- datos %>% 
+  dplyr::select(-c(folio:hogar, expr:fecha_año)) %>% 
+  filter(region == "13") %>% 
+  dplyr::select(comuna, e1, e6a, ch1, y1, ch2, y6, o6, o8) %>% 
+  mutate(comuna = as.character(comuna))
+
+## chi1: 1-asalariado, 2-emprendedor, 3-inactivo o cesante 4-muy chico
+## y1: sueldo líquido mes pasado
+## ch2: 1-tiene otra pega, 2-no tiene nada más
+## y6: sueldo segunda pega
+## o6: buscó trabajo o intentó iniciar algo propio en el último mes (1-sí, 2-no)
+## o8: cuántas semanas buscó o ha buscado pega (999-no sabe/no responde)
+
+# Fuerza laboral por comuna (no dejaron en blanco o1)
+p.comuna <- trabajo[is.na(trabajo$o1)==FALSE & is.na(trabajo$e1)==FALSE,] %>% 
+  filter(e1!=9, e6a != 99) %>% 
+  count(comuna)
+
+asalariados <- trabajo[is.na(trabajo$e1)==FALSE, 1:7] %>% 
+  filter(ch1 == 1, e1 !=9, e6a !=99) %>% 
+  mutate(sueldo_total = ifelse(is.na(y6)==FALSE, y1+y6, y1),
+         trabajos = ifelse(ch2==1, 2, 1)) %>% 
+  dplyr::select(-c(ch1,ch2,y1,y6)) 
+
+asalariados %>% ggplot(aes(as.factor(e6a), sueldo_total)) + 
+  geom_boxplot() 
+
+
+trabajando %>% 
+  count(e1) #la mayoría de los trabajadores sabe leer y escribir
+
+# Nivel de educación de las personas que trabajan
+trabajando %>% filter(e1 == 1, e6a != 99) %>% 
+  count(e6a) %>% 
+  ggplot(aes(as.factor(e6a), n/nrow(trabajando)*100)) +
+  geom_col()
+## La mayoría sólo tiene educación media. Le sigue título profesional completo.
+
+cesante <- trabajo[is.na(trabajo$o1)==FALSE & is.na(trabajo$e1)==FALSE, ] %>% 
+  filter(o1 == 2, o3 == 2, e1 !=9, e6a != 99)
+
+cesante %>% count(e1) #la mayoría de los cesantes saben leer y escribir
+
+cesante %>% filter(o6 == 1, o8 != 999) %>% 
+  ggplot(aes(o8, fill = as.factor(e6a)))+ 
+  geom_histogram()
+
+  
