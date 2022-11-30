@@ -186,7 +186,7 @@ trabajo <- datos %>%
   dplyr::select(-c(folio:hogar, expr:fecha_año)) %>% 
   filter(region == "13") %>% 
   dplyr::select(comuna, e1, e6a, ch1, y1, ch2, y6, o6, o8) %>% 
-  mutate(comuna = as.character(comuna))
+  mutate(comuna = as.character(comuna), e6a = as.factor(e6a))
 
 ## chi1: 1-asalariado, 2-emprendedor, 3-inactivo o cesante 4-muy chico
 ## y1: sueldo líquido mes pasado
@@ -206,27 +206,20 @@ asalariados <- trabajo[is.na(trabajo$e1)==FALSE, 1:7] %>%
          trabajos = ifelse(ch2==1, 2, 1)) %>% 
   dplyr::select(-c(ch1,ch2,y1,y6)) 
 
-asalariados %>% ggplot(aes(as.factor(e6a), sueldo_total)) + 
+asalariados %>% ggplot(aes(e6a)) +
+  geom_bar()
+
+asalariados %>% ggplot(aes(e6a, sueldo_total)) + 
   geom_boxplot() 
 
+sueldos <- asalariados %>% group_by(e6a) %>% 
+  summarise(media = mean(sueldo_total), mediana = median(sueldo_total))
 
-trabajando %>% 
-  count(e1) #la mayoría de los trabajadores sabe leer y escribir
-
-# Nivel de educación de las personas que trabajan
-trabajando %>% filter(e1 == 1, e6a != 99) %>% 
-  count(e6a) %>% 
-  ggplot(aes(as.factor(e6a), n/nrow(trabajando)*100)) +
+sueldos %>% ggplot(aes(e6a, mediana)) +
   geom_col()
-## La mayoría sólo tiene educación media. Le sigue título profesional completo.
 
-cesante <- trabajo[is.na(trabajo$o1)==FALSE & is.na(trabajo$e1)==FALSE, ] %>% 
-  filter(o1 == 2, o3 == 2, e1 !=9, e6a != 99)
+sueldos %>% ggplot(aes(e6a, media)) +
+  geom_col()
 
-cesante %>% count(e1) #la mayoría de los cesantes saben leer y escribir
-
-cesante %>% filter(o6 == 1, o8 != 999) %>% 
-  ggplot(aes(o8, fill = as.factor(e6a)))+ 
-  geom_histogram()
 
   
