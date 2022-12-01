@@ -417,9 +417,6 @@ corrplot::corrplot(cor)
 
 mod_Pears3 <- factanal(factors = 3, covmat = cor, n.obs = nrow(yanomas))
 
-l <- mod_Pears3$loadings[,1:3]
-psi <- diag(mod_Pears3$uniquenesses)
-promedios <- colMeans(yanomas)
-aux <- solve(t(l)%*%solve(psi)%*%l) %*% t(l) %*% solve(psi)
+
 
 
