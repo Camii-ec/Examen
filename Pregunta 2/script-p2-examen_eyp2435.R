@@ -33,7 +33,6 @@ datos1 <- datos[,c("folio",
                    "region",
                    "comuna",
                    "numper", #personas en el hogar sin contar a la nana
-                   "asiste", #¿asiste?
                    "esc", #escolaridad
                    "educ", #nivel educacional
                    "depen", #dependencia educacional
@@ -46,9 +45,8 @@ datos1 <- datos[,c("folio",
                    "ytotcorh", #ingreso total del hogar corregido
                    "pobreza", #pobreza por ingresos
                    "pobreza_multi_4d", #pobreza 4-dimensional
-                   "pobreza_multi_5d", #pobreza 5-dimensional
-                   "dau", #decil autónomo nacional
-                   "dautr")] #decil autónomo regional
+                   "pobreza_multi_5d" #pobreza 5-dimensional
+                   )] #decil autónomo regional
 
 
 # Pobreza por región ------------------------------------------------------
@@ -265,52 +263,6 @@ left_join(chile, p.region[which(p.region$educ==12),]) %>%
   geom_sf(aes(geometry = geometry, fill = prop)) + 
   coord_sf(xlim = c(-77, -65))
 
-
-# Análisis factorial ------------------------------------------------------
-
-library(psych)
-library(GPArotation)
-
-datitos <- datos[,c("numper", #personas en el hogar sin contar a la nana
-                   "esc", #escolaridad
-                   "educ", #nivel educacional
-                   "depen", #dependencia educacional
-                   "activ", #condición de actividad con respecto al trabajo
-                   "indmat", #cómo está la casa
-                   "hacinamiento",
-                   "pobreza", #pobreza por ingresos
-                   "pobreza_multi_4d", #pobreza 4-dimensional
-                   "pobreza_multi_5d", #pobreza 5-dimensional
-                   "dau" #decil autónomo nacional
-                   )]
-
-datazos <- na.omit(datitos)
-
-CorPears <- cor(datazos)
-
-corrplot::corrplot(CorPears)
-
-mod_Pears1 <- factanal(factors = 5, covmat = CorPears, n.obs = nrow(datazos),
-                       rotation = "bifactorT")
-
-mod_P <- fa(r = CorPears,
-            nfactors = 5,
-            rotate = "none",
-            n.obs = nrow(datazos),
-            fm = "ml")
-
-lambdas <- eigen(CorPears)$values[1]
-e <- eigen(CorPears)$vectors[,1]
-
-L <- sqrt(lambdas)*e
-l2 <- colSums(L^2)
-psi <- diag(rep(1,10)-L^2)
-
-S <- L%*%t(L)+psi
-
-corrplot::corrplot(S)
-
-
 # Regresión ---------------------------------------------------------------
 
 str(muerte)
@@ -320,7 +272,6 @@ muerte <- na.omit(datos1)
 
 muerte$region <- as.factor(muerte$region)
 muerte$comuna <- as.factor(muerte$comuna)
-muerte$asiste <- as.character(muerte$asiste)
 muerte$esc <- as.factor(muerte$esc)
 muerte$educ <- as.factor(muerte$educ)
 muerte$depen <- as.factor(muerte$depen)
@@ -340,24 +291,6 @@ muerte$numper <- as.numeric(muerte$numper)
 muerte$ytotcorh <- as.numeric(muerte$ytotcorh)
 
 destruccion <- fastDummies::dummy_columns(muerte)[,-c(1:3, 5:14, 16:20)]
-
-
-## Regresión con una respuesta ----
-
-pepito <- lm(ytotcorh ~., destruccion)
-summary(pepito)
-
-juanito <- step(pepito, trace = FALSE)
-datos.juanito <- summary(juanito)
-
-## Intervalo de confianza para betas
-
-alpha <- 0.05
-
-t <- qt(1-alpha/2, nrow(datos1)-1)
-
-ic.upper <- datos.juanito$coefficients[,1] + t*datos.juanito$coefficients[,2]
-ic.lower <- datos.juanito$coefficients[,1] - t*datos.juanito$coefficients[,2]
 
 ## Regresión con múltiples respuestas ----
 
@@ -392,8 +325,55 @@ panico <- muestra(muerte)[,-1]
 
 Y <- respuesta.region(data.frame(panico))
 
-agonia <- panico[,-14]
-agonia[,3] <- as.numeric(agonia[,3])
+agonia <- data.frame(panico[,-13])
+agonia$numper <- as.numeric(agonia$numper)
 
-desesperacion <- fastDummies::dummy_columns(agonia, remove_first_dummy = TRUE)
+m.diseño <- function(datos){
+  x <- list()
+  
+  for(reg in 1:16){
+    aux <- datos %>% 
+      filter(region == as.character(reg)) %>% 
+      dplyr::select(-region) %>% 
+      fastDummies::dummy_columns(remove_first_dummy = TRUE) %>% 
+      dplyr::select(-c(comuna, esc:pobreza_multi_5d)) %>% 
+      as.matrix()
+    
+    x[[reg]] <- aux
+  }
+  
+  return(x)
+}
+
+X <- m.diseño(agonia)
+
+correlaciones <- function(x, y){
+  for(i in 1:16){
+    cor <- cor(cbind(x[[i]],Y[,]))
+  }
+}
+
+regresiones <- function(y, x, step = FALSE){
+  modelos <- list(NA)
+  for(i in 1:16){
+    aux <- x[[i]]
+    modelos[[i]] <- lm(y[,i] ~ aux)
+  }
+  
+  if(step == TRUE){
+    for(i in 1:16){
+      modelos[[i]] <- step(lm(y[,i] ~ aux))
+    }
+  }
+  
+  return(modelos)
+}
+
+desesperacion <- regresiones(Y, X)
+
+summary(desesperacion[[1]])
+
+jlo <- regresiones(Y, X, step = TRUE)
+summary(jlo[[1]])
+
 
