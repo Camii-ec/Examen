@@ -377,3 +377,49 @@ jlo <- regresiones(Y, X, step = TRUE)
 summary(jlo[[1]])
 
 
+# Análisis factorial -----------------------------------------------
+
+library(GPArotation)
+
+datitos <- datos %>% 
+  dplyr::select(region, comuna, r1a, educ, depen, 
+         indsan, iae, iai, hacinamiento, calglobviv, ypchautcor) %>% 
+  na.omit()
+
+X <- datitos$ypchautcor
+
+datitos <- scale(datitos[,-11])
+
+cor <- cor(datitos)
+corrplot::corrplot(cor)
+
+mod_Pears1 <- factanal(factors = 3, covmat = cor, n.obs = nrow(datitos))
+
+datazos <- datos %>% 
+  dplyr::select(region, comuna, hh_d_asis:hh_d_seg) %>% 
+  na.omit()
+
+cor <- cor(scale(datazos))
+corrplot::corrplot(cor)
+
+mod_Pears2 <- factanal(factors = 3, covmat = cor, n.obs = nrow(datazos))
+
+
+yanomas <- datos %>% 
+  dplyr::select(calglobviv, hh_d_habitab:hh_d_estado, 
+                hh_d_entorno:hh_d_medio, ypchautcor) %>% 
+  na.omit()
+X <- yanomas$ypchautcor
+yanomas <- yanomas[,-8]
+
+cor <- cor(yanomas)
+corrplot::corrplot(cor)
+
+mod_Pears3 <- factanal(factors = 3, covmat = cor, n.obs = nrow(yanomas))
+
+l <- mod_Pears3$loadings[,1:3]
+psi <- diag(mod_Pears3$uniquenesses)
+promedios <- colMeans(yanomas)
+aux <- solve(t(l)%*%solve(psi)%*%l) %*% t(l) %*% solve(psi)
+
+
