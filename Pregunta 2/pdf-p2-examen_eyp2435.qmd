@@ -54,6 +54,7 @@ Para objetos de este análisis, y a falta del conocimiento de una mejor manera d
 En conclusión, el Emiliano vale pico, pero no tanto como Aravena.
 
 # Bibliografía (EDITAR DESPUÉS)
+.
 
 1. https://www.fundaciontrascender.cl/2018/12/18/que-es-pobreza-multidimensional/
 2. Libro de códigos Base de Datos Casen 2017
