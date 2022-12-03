@@ -40,7 +40,9 @@ datos1 <- datos[,c("region",
                    "indsan", #saneamiento
                    "iae", #allegado externo
                    "iai", #allegado interno
-                   "hacinamiento"
+                   "hacinamiento",
+                   "pobreza",
+                   "ypchautcor"
                    )] #decil autónomo regional
 
 save(datos1, file = "Pregunta 2/DatosP2.RData")
@@ -266,21 +268,40 @@ load("Pregunta 2/DatosP2.RData")
 
 datos1[is.na(datos1)] <- 0
 
-sigma <- cov(scale(datos1))
+
+## Para balancear la muestra, consideramos a 20 mil personas no pobres al azar y 20 mil personas pobres (extremas y no extremas) al azar.
+muestra <- function(datos){
+  pobres <- which(datos$pobreza %in% c(1,2))
+  nopobres <- which(datos$pobreza==3)
+  
+  n1 <- sample(pobres, 20000)
+  n2 <- sample(nopobres, 20000)
+  n <- sort(c(n1,n2))
+  
+  datitos <- datos[n,]
+  
+  return(datitos)
+}
+
+datazo <- muestra(datos1)
+
+ingreso <- datazo[,14]
+pobreza <- recode(datazo[,13], `1` = "1", `2` = "1", `3` = "2")
+salmon <- datazo[,-c(13,14)]
+
+sigma <- cor(scale(salmon))
+
+corrplot::corrplot(sigma)
 
 valp <- eigen(sigma)$values
 vecp <- eigen(sigma)$vectors
 
-plot(valp/sum(valp))
+prop.var <- valp/sum(valp)
 
-#test para 8 componentes
-f <- sum(valp[9:length(valp)])/sum(valp)
-var.f <- 2*(0.25/sum(diag(sigma)))^2*sum(valp[1:8]^2) + 
-  2*(0.75/sum(diag(sigma)))^2*sum(valp[9:length(valp)]^2)
+## Queremos explicar entre un 70% y un 90% de la varianza, así que vemos con cuántos componentes logramos eso
+cumsum(prop.var)
 
-sqrt(length(valp)-1)*abs(f-0.25) < qnorm(0.975)*sqrt(var.f)
-#rechazamos H0, podemos usar 8 componentes 
-
+# Así, nos quedamos únicamente con 8
 valp <- eigen(sigma)$values[1:8]
 vecp <- eigen(sigma)$vectors[,1:8]
 
@@ -300,4 +321,31 @@ correlaciones <- function(valp, vecp, sigma){
 }
 
 r <- correlaciones(valp, vecp, sigma)
+rownames(r) <- colnames(datos1)[-c(13,14)]
+colnames(r) <- paste0("r", 1:8)
+
+data.frame(r) %>% ggplot(aes(x=1:12)) +
+  geom_line(aes(y=r1, color = "r1"), size = 1.5) +
+  geom_line(aes(y=r2, color = "r2"), size = 1.5) +
+  geom_line(aes(y=r3, color = "r3"), size = 1.5) +
+  geom_line(aes(y=r4, color = "r4"), size = 1.5) +
+  geom_line(aes(y=r5, color = "r5"), size = 1.5) +
+  geom_line(aes(y=r6, color = "r6"), size = 1.5) +
+  geom_line(aes(y=r7, color = "r7"), size = 1.5) +
+  geom_line(aes(y=r8, color = "r8"), size = 1.5) +
+  theme_bw() +
+  labs(title = "Correlaciones de las componentes principales con las variables",
+       color = "Componentes") +
+  scale_color_manual(values = rainbow(8)) 
+
+## Varianza explicada para cada variable
 rowSums(r^2)
+
+a <- as.matrix(salmon)%*%vecp
+suma <- rowSums(a)
+ 
+plot(suma)
+
+b <- data.frame(suma, pobreza)
+
+b %>% filter(suma > 11500)
