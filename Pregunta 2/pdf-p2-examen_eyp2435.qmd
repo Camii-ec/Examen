@@ -31,32 +31,65 @@ tbl-cap-location: bottom
 
 Para el desarrollo de nuestro análisis, hemos extraído diversas variables de la base de datos `Casen2017.dta`. Entre ellas, podemos destacar las siguientes variables identificadoras o clasificadoras:
 
-- `region`: el identificador de cada región.
-- `folio`: corresponde al identificador único de cada hogar. Recordemos que la Casen hace distinción entre estos y viviendas, por lo que puede haber más de un hogar por vivienda.
-- `comuna`: sirve para identificar a qué comuna del país pertenece el hogar.
+-   `region`: el identificador de cada región.
+-   `folio`: corresponde al identificador único de cada hogar. Recordemos que la Casen hace distinción entre estos y viviendas, por lo que puede haber más de un hogar por vivienda.
+-   `comuna`: sirve para identificar a qué comuna del país pertenece el hogar.
 
 Luego, nos quedamos con 3 de los indicadores de pobreza que se encuentran en el cuestionario:
 
-- `pobreza`: corresponde a la situación de pobreza por ingresos. Puede ser extremo (1), no extremo (2) o no pobre.
-- `pobreza_multi_4d`: comprendiendo la pobreza multidimensional como un "concepto más allá de la falta de ingresos para la satisfacción de necesidades, sino más bien como personas que sufren carencias en las dimensiones: educación, salud, trabajo, seguridad social, vivienda y nivel de vida en general." (Gerlach V., 2018), corresponde a la pobreza en al menos 4 dimensiones.
-- `pobreza_multi_5d`: en la misma línea, corresponde a la pobreza en al menos 5 de estas dimensiones.
+-   `pobreza`: corresponde a la situación de pobreza por ingresos. Puede ser extremo (1), no extremo (2) o no pobre.
+-   `pobreza_multi_4d`: comprendiendo la pobreza multidimensional como un "concepto más allá de la falta de ingresos para la satisfacción de necesidades, sino más bien como personas que sufren carencias en las dimensiones: educación, salud, trabajo, seguridad social, vivienda y nivel de vida en general." (Gerlach V., 2018), corresponde a la pobreza en al menos 4 dimensiones.
+-   `pobreza_multi_5d`: en la misma línea, corresponde a la pobreza en al menos 5 de estas dimensiones.
 
 También se utilizaron todas las variables disponibles en la sección de indicadores en el Libro de Códigos Base de Datos (Casen, 2017), las que engeneral corresponden a un resumen de los indicadores obtenidos a través de la encuesta.
 
-Para objetos de este análisis, y a falta del conocimiento de una mejor manera de tratar estos datos, se eliminaron todos los `NA` (o respuesta en blanco) de la base, pues en ninguna variable representaban alguna información significativa y con ellos no era posible realizar los distintos análisis que hemos propuesto en las metodologías.
+Para objetos de este análisis, muchas de la variables `NA` se debe a que por el formulario si respondió cierta pregunta anteriormente, entonces esa pregunta debía estar en blanco. Es por ello que para las variables `NA` se les cambió por el valor 0 como respuesta `No aplica`.
 
 # Metodologías
 
+En este informe analizaremos las características socioeconómicas en Chile. Para ello primero analizaremos de manera global las características de las personas según la región.
+
+De esta manera de forma visual observaremos que existe algunas relaciones entre la zona demográfica, actividad laboral, ingresos recibidos, nivel educacional, pobreza, entre otras variables de interés.
+
+Además se realizará un análisis factorial (debido a que los datos son categóricos) para reducir la dimensionalidad. Dentro de las variables ocupadas están: `region`, `comuna`, `numper`, `esc`, `educ`, `depen`, `activ`, `indmat`, `indsan`, `iae`, `iai` y `hacinamiento`. En este análisis factorial se determinará el número de factores mediante el Porcentaje de Varianza explicada.
+
 # Resultados
+
+En el análisis regional obtendremos los siguientes resultados:
+
+-   Análisis de pobreza por Región:
+
+```{r, include = TRUE, message = FALSE, warning = FALSE, echo = FALSE, results = FALSE}
+load("DatosP2.RData")
+datos2 <- datos1[is.na(datos$pobreza)==FALSE,] %>% 
+  mutate(region = as.character(region),
+         comuna = as.character(comuna)) 
+
+datos2$region <- recode(datos2$region, "1" = "01", "2" = "02", "3" = "03", 
+                        "4" = "04", "5" = "05", "6" = "06", "7" = "07", 
+                        "8" = "08", "9" = "09")
+
+personas <- datos2 %>% count(region)
+
+p.region <- datos2 %>% count(region, pobreza) 
+
+p.region <- left_join(p.region, personas, by = "region") %>% 
+  mutate(prop = n.x/n.y*100) %>% 
+  dplyr::select(region, pobreza, prop)
+```
+
+```{r, message = FALSE, results = "hide", warning = FALSE, echo = FALSE,out.width='80%',fig.align='center',fig.pos='htbp', fig.cap="\\label{fig:cap05gg02}Porcentaje de pobreza por regiones}
+left_join(chile, p.region[which(p.region$pobreza %in% c(1, 2)),]) %>% 
+  ggplot() +
+  geom_sf(aes(geometry = geometry, fill = prop)) + 
+  coord_sf(xlim = c(-77, -65))
+```
 
 # Conclusión
 
 En conclusión, el Emiliano vale pico, pero no tanto como Aravena.
 
 # Bibliografía (EDITAR DESPUÉS)
-.
 
-1. https://www.fundaciontrascender.cl/2018/12/18/que-es-pobreza-multidimensional/
-2. Libro de códigos Base de Datos Casen 2017
-
-
+1.  https://www.fundaciontrascender.cl/2018/12/18/que-es-pobreza-multidimensional/
+2.  Libro de códigos Base de Datos Casen 2017

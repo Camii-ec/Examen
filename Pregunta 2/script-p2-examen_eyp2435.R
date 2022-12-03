@@ -8,6 +8,7 @@ library(scales)
 library(raster)
 library(rworldxtra)
 library(sf)
+library(ggrepel)
 
 # Carga de datos
 datos = rio::import(file.choose())
@@ -43,9 +44,9 @@ datos1 <- datos[,c("region",
                    "hacinamiento",
                    "pobreza",
                    "ypchautcor"
-                   )] #decil autónomo regional
+)] #decil autónomo regional
 
-save(datos1, file = "Pregunta 2/DatosP2.RData")
+save(datos1, file = "DatosP2.RData")
 
 
 # Pobreza por región ------------------------------------------------------
@@ -53,7 +54,7 @@ save(datos1, file = "Pregunta 2/DatosP2.RData")
 datos2 <- datos1[is.na(datos$pobreza)==FALSE,] %>% 
   mutate(region = as.character(region),
          comuna = as.character(comuna)) 
-  
+
 datos2$region <- recode(datos2$region, "1" = "01", "2" = "02", "3" = "03", 
                         "4" = "04", "5" = "05", "6" = "06", "7" = "07", 
                         "8" = "08", "9" = "09")
@@ -66,11 +67,22 @@ p.region <- left_join(p.region, personas, by = "region") %>%
   mutate(prop = n.x/n.y*100) %>% 
   dplyr::select(region, pobreza, prop)
 
+library(purrr)
 # Pobres extremos 
-left_join(chile, p.region[which(p.region$pobreza==1),]) %>% 
+left_join(chile, p.region[which(p.region$pobreza %in% c(1, 2)),]) %>%
+  mutate(centroid = map(geometry, st_centroid), 
+         coords = map(centroid, st_coordinates), 
+         coords_x = map_dbl(coords, 1), 
+         coords_y = map_dbl(coords, 2))%>% 
   ggplot() +
   geom_sf(aes(geometry = geometry, fill = prop)) + 
-  coord_sf(xlim = c(-77, -65))
+  coord_sf(xlim = c(-77, -65)) +
+  geom_text_repel(mapping = aes(coords_x, coords_y, label = region), 
+                  size = 4, min.segment.length = 1) +
+  theme(axis.text.x = element_blank(), # Eliminar ejes
+        axis.ticks.x = element_blank(),
+        axis.text.y = element_blank(),
+        axis.ticks.y = element_blank())
 
 # Pobres no extremos
 left_join(chile, p.region[which(p.region$pobreza==2),]) %>% 
@@ -264,7 +276,7 @@ left_join(chile, p.region[which(p.region$educ==12),]) %>%
 
 # Intento número 1000 -----------------------------------------------------
 
-load("Pregunta 2/DatosP2.RData")
+load("DatosP2.RData")
 
 datos1[is.na(datos1)] <- 0
 
@@ -343,7 +355,7 @@ rowSums(r^2)
 
 a <- as.matrix(salmon)%*%vecp
 suma <- rowSums(a)
- 
+
 plot(suma)
 
 b <- data.frame(suma, pobreza)
