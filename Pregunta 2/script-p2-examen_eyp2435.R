@@ -29,8 +29,7 @@ rm %>% ggplot() +
 
 # Variabless útiles -------------------------------------------------------
 
-datos1 <- datos[,c("folio",
-                   "region",
+datos1 <- datos[,c("region",
                    "comuna",
                    "numper", #personas en el hogar sin contar a la nana
                    "esc", #escolaridad
@@ -514,7 +513,7 @@ plot(prop.var)
 cumsum(prop.var)
 
 correlaciones <- function(valp, vecp, sigma){
-  r <- matrix(1, nrow=13)
+  r <- matrix(1, nrow=12)
   for(i in 1:8){
     r <- cbind(r, vecp[,i]*sqrt(valp[i]/sigma[i,i]))
   }
