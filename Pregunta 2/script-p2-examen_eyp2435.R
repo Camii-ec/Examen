@@ -41,11 +41,7 @@ datos1 <- datos[,c("folio",
                    "indsan", #saneamiento
                    "iae", #allegado externo
                    "iai", #allegado interno
-                   "hacinamiento",
-                   "ytotcorh", #ingreso total del hogar corregido
-                   "pobreza", #pobreza por ingresos
-                   "pobreza_multi_4d", #pobreza 4-dimensional
-                   "pobreza_multi_5d" #pobreza 5-dimensional
+                   "hacinamiento"
                    )] #decil autónomo regional
 
 
@@ -518,7 +514,7 @@ plot(prop.var)
 cumsum(prop.var)
 
 correlaciones <- function(valp, vecp, sigma){
-  r <- matrix(1, nrow=17)
+  r <- matrix(1, nrow=13)
   for(i in 1:8){
     r <- cbind(r, vecp[,i]*sqrt(valp[i]/sigma[i,i]))
   }
