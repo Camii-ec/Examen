@@ -51,9 +51,11 @@ save(datos1, file = "DatosP2.RData")
 
 # Pobreza por región ------------------------------------------------------
 
-datos2 <- datos1[is.na(datos$pobreza)==FALSE,] %>% 
+datos2 <- datos1 %>% 
   mutate(region = as.character(region),
          comuna = as.character(comuna)) 
+
+datos2$pobreza[is.na(datos2$pobreza)] = 0
 
 datos2$region <- recode(datos2$region, "1" = "01", "2" = "02", "3" = "03", 
                         "4" = "04", "5" = "05", "6" = "06", "7" = "07", 
@@ -67,41 +69,72 @@ p.region <- left_join(p.region, personas, by = "region") %>%
   mutate(prop = n.x/n.y*100) %>% 
   dplyr::select(region, pobreza, prop)
 
-library(purrr)
 # Pobres extremos 
 left_join(chile, p.region[which(p.region$pobreza %in% c(1, 2)),]) %>%
   mutate(centroid = map(geometry, st_centroid), 
          coords = map(centroid, st_coordinates), 
          coords_x = map_dbl(coords, 1), 
-         coords_y = map_dbl(coords, 2))%>% 
+         coords_y = map_dbl(coords, 2)) %>%
   ggplot() +
   geom_sf(aes(geometry = geometry, fill = prop)) + 
   coord_sf(xlim = c(-77, -65)) +
-  geom_text_repel(mapping = aes(coords_x, coords_y, label = region), 
-                  size = 4, min.segment.length = 1) +
+  geom_text_repel(mapping = aes(coords_x, 
+                                coords_y, 
+                                label = region),
+                  max.overlaps = 49) +
   theme(axis.text.x = element_blank(), # Eliminar ejes
         axis.ticks.x = element_blank(),
         axis.text.y = element_blank(),
-        axis.ticks.y = element_blank())
+        axis.ticks.y = element_blank()) +
+  scale_fill_gradient(low = "green", high = "brown", na.value = NA)
 
 # Pobres no extremos
 left_join(chile, p.region[which(p.region$pobreza==2),]) %>% 
+  mutate(centroid = map(geometry, st_centroid), 
+         coords = map(centroid, st_coordinates), 
+         coords_x = map_dbl(coords, 1), 
+         coords_y = map_dbl(coords, 2))%>%
   ggplot() +
   geom_sf(aes(geometry = geometry, fill = prop)) + 
-  coord_sf(xlim = c(-77, -65))
+  coord_sf(xlim = c(-77, -65)) +
+  geom_text_repel(mapping = aes(coords_x, 
+                                coords_y, 
+                                label = region),
+                  max.overlaps = 49) +
+  theme(axis.text.x = element_blank(), # Eliminar ejes
+        axis.ticks.x = element_blank(),
+        axis.text.y = element_blank(),
+        axis.ticks.y = element_blank()) +
+  scale_fill_gradient(low = "green", high = "brown", na.value = NA)
+
 
 # Millonarios
 left_join(chile, p.region[which(p.region$pobreza==3),]) %>% 
+  mutate(centroid = map(geometry, st_centroid), 
+         coords = map(centroid, st_coordinates), 
+         coords_x = map_dbl(coords, 1), 
+         coords_y = map_dbl(coords, 2))%>%
   ggplot() +
   geom_sf(aes(geometry = geometry, fill = prop)) + 
-  coord_sf(xlim = c(-77, -65))
+  coord_sf(xlim = c(-77, -65)) +
+  geom_text_repel(mapping = aes(coords_x, 
+                                coords_y, 
+                                label = region),
+                  max.overlaps = 49) +
+  theme(axis.text.x = element_blank(), # Eliminar ejes
+        axis.ticks.x = element_blank(),
+        axis.text.y = element_blank(),
+        axis.ticks.y = element_blank()) +
+  scale_fill_gradient(low = "green", high = "brown", na.value = NA)
 
 
 # Índice de actividad por región ------------------------------------------
 
-datos3 <- datos1[is.na(datos$activ)==FALSE,] %>% 
+datos3 <- datos1 %>% 
   mutate(region = as.character(region),
          comuna = as.character(comuna)) 
+
+datos3$activ[is.na(datos3$activ)] = 0
 
 datos3$region <- recode(datos3$region, "1" = "01", "2" = "02", "3" = "03", 
                         "4" = "04", "5" = "05", "6" = "06", "7" = "07", 
@@ -117,21 +150,60 @@ p.region <- left_join(p.region, personas, by = "region") %>%
 
 # Ocupados 
 left_join(chile, p.region[which(p.region$activ==1),]) %>% 
+  mutate(centroid = map(geometry, st_centroid), 
+         coords = map(centroid, st_coordinates), 
+         coords_x = map_dbl(coords, 1), 
+         coords_y = map_dbl(coords, 2)) %>%
   ggplot() +
   geom_sf(aes(geometry = geometry, fill = prop)) + 
-  coord_sf(xlim = c(-77, -65))
+  coord_sf(xlim = c(-77, -65)) +
+  geom_text_repel(mapping = aes(coords_x, 
+                                coords_y, 
+                                label = region),
+                  max.overlaps = 49) +
+  theme(axis.text.x = element_blank(), # Eliminar ejes
+        axis.ticks.x = element_blank(),
+        axis.text.y = element_blank(),
+        axis.ticks.y = element_blank()) +
+  scale_fill_gradient(low = "green", high = "orange", na.value = NA)
 
 # Desocupados
 left_join(chile, p.region[which(p.region$activ==2),]) %>% 
+  mutate(centroid = map(geometry, st_centroid), 
+         coords = map(centroid, st_coordinates), 
+         coords_x = map_dbl(coords, 1), 
+         coords_y = map_dbl(coords, 2)) %>%
   ggplot() +
   geom_sf(aes(geometry = geometry, fill = prop)) + 
-  coord_sf(xlim = c(-77, -65))
+  coord_sf(xlim = c(-77, -65)) +
+  geom_text_repel(mapping = aes(coords_x, 
+                                coords_y, 
+                                label = region),
+                  max.overlaps = 49) +
+  theme(axis.text.x = element_blank(), # Eliminar ejes
+        axis.ticks.x = element_blank(),
+        axis.text.y = element_blank(),
+        axis.ticks.y = element_blank()) +
+  scale_fill_gradient(low = "orange", high = "green", na.value = NA)
 
 # Inactivos
 left_join(chile, p.region[which(p.region$activ==3),]) %>% 
+  mutate(centroid = map(geometry, st_centroid), 
+         coords = map(centroid, st_coordinates), 
+         coords_x = map_dbl(coords, 1), 
+         coords_y = map_dbl(coords, 2)) %>%
   ggplot() +
   geom_sf(aes(geometry = geometry, fill = prop)) + 
-  coord_sf(xlim = c(-77, -65))
+  coord_sf(xlim = c(-77, -65)) +
+  geom_text_repel(mapping = aes(coords_x, 
+                                coords_y, 
+                                label = region),
+                  max.overlaps = 49) +
+  theme(axis.text.x = element_blank(), # Eliminar ejes
+        axis.ticks.x = element_blank(),
+        axis.text.y = element_blank(),
+        axis.ticks.y = element_blank()) +
+  scale_fill_gradient(low = "orange", high = "green", na.value = NA)
 
 
 # Ingresos por región -----------------------------------------------------
