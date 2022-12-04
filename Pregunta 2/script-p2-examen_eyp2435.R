@@ -69,8 +69,9 @@ p.region <- left_join(p.region, personas, by = "region") %>%
   mutate(prop = n.x/n.y*100) %>% 
   dplyr::select(region, pobreza, prop)
 
+
 # Pobres extremos 
-left_join(chile, p.region[which(p.region$pobreza %in% c(1, 2)),]) %>%
+left_join(chile, p.region[which(p.region$pobreza == 1),]) %>%
   mutate(centroid = map(geometry, st_centroid), 
          coords = map(centroid, st_coordinates), 
          coords_x = map_dbl(coords, 1), 
@@ -81,7 +82,7 @@ left_join(chile, p.region[which(p.region$pobreza %in% c(1, 2)),]) %>%
   geom_text_repel(mapping = aes(coords_x, 
                                 coords_y, 
                                 label = region),
-                  max.overlaps = 49) +
+                  col = "black", size = 3, max.overlaps = 22) +
   theme(axis.text.x = element_blank(), # Eliminar ejes
         axis.ticks.x = element_blank(),
         axis.text.y = element_blank(),
@@ -93,14 +94,14 @@ left_join(chile, p.region[which(p.region$pobreza==2),]) %>%
   mutate(centroid = map(geometry, st_centroid), 
          coords = map(centroid, st_coordinates), 
          coords_x = map_dbl(coords, 1), 
-         coords_y = map_dbl(coords, 2))%>%
+         coords_y = map_dbl(coords, 2)) %>%
   ggplot() +
   geom_sf(aes(geometry = geometry, fill = prop)) + 
   coord_sf(xlim = c(-77, -65)) +
   geom_text_repel(mapping = aes(coords_x, 
                                 coords_y, 
                                 label = region),
-                  max.overlaps = 49) +
+                  col = "black", size = 3, max.overlaps = 22) +
   theme(axis.text.x = element_blank(), # Eliminar ejes
         axis.ticks.x = element_blank(),
         axis.text.y = element_blank(),
@@ -113,14 +114,14 @@ left_join(chile, p.region[which(p.region$pobreza==3),]) %>%
   mutate(centroid = map(geometry, st_centroid), 
          coords = map(centroid, st_coordinates), 
          coords_x = map_dbl(coords, 1), 
-         coords_y = map_dbl(coords, 2))%>%
+         coords_y = map_dbl(coords, 2)) %>%
   ggplot() +
   geom_sf(aes(geometry = geometry, fill = prop)) + 
   coord_sf(xlim = c(-77, -65)) +
   geom_text_repel(mapping = aes(coords_x, 
                                 coords_y, 
                                 label = region),
-                  max.overlaps = 49) +
+                  col = "black", size = 3, max.overlaps = 22) +
   theme(axis.text.x = element_blank(), # Eliminar ejes
         axis.ticks.x = element_blank(),
         axis.text.y = element_blank(),
@@ -165,7 +166,7 @@ left_join(chile, p.region[which(p.region$activ==1),]) %>%
         axis.ticks.x = element_blank(),
         axis.text.y = element_blank(),
         axis.ticks.y = element_blank()) +
-  scale_fill_gradient(low = "green", high = "orange", na.value = NA)
+  scale_fill_gradient(low = "blue", high = "orange", na.value = NA)
 
 # Desocupados
 left_join(chile, p.region[which(p.region$activ==2),]) %>% 
@@ -184,7 +185,7 @@ left_join(chile, p.region[which(p.region$activ==2),]) %>%
         axis.ticks.x = element_blank(),
         axis.text.y = element_blank(),
         axis.ticks.y = element_blank()) +
-  scale_fill_gradient(low = "orange", high = "green", na.value = NA)
+  scale_fill_gradient(low = "orange", high = "blue", na.value = NA)
 
 # Inactivos
 left_join(chile, p.region[which(p.region$activ==3),]) %>% 
@@ -203,12 +204,12 @@ left_join(chile, p.region[which(p.region$activ==3),]) %>%
         axis.ticks.x = element_blank(),
         axis.text.y = element_blank(),
         axis.ticks.y = element_blank()) +
-  scale_fill_gradient(low = "orange", high = "green", na.value = NA)
+  scale_fill_gradient(low = "white", high = "red", na.value = NA)
 
 
 # Ingresos por región -----------------------------------------------------
 
-datos4 <- datos1 %>% distinct(folio, .keep_all = TRUE) %>% 
+datos4 <- datos1 %>% 
   mutate(region = as.character(region),
          comuna = as.character(comuna)) 
 
@@ -217,19 +218,45 @@ datos4$region <- recode(datos4$region, "1" = "01", "2" = "02", "3" = "03",
                         "8" = "08", "9" = "09")
 
 p.region <- datos4 %>% group_by(region) %>% 
-  summarise(media = mean(ytotcorh), mediana = median(ytotcorh))
+  summarise(media = mean(ypchautcor), mediana = median(ypchautcor))
 
 # Ingreso medio del hogar
 left_join(chile, p.region) %>% 
+  mutate(centroid = map(geometry, st_centroid), 
+         coords = map(centroid, st_coordinates), 
+         coords_x = map_dbl(coords, 1), 
+         coords_y = map_dbl(coords, 2)) %>%
   ggplot() +
   geom_sf(aes(geometry = geometry, fill = media)) + 
-  coord_sf(xlim = c(-77, -65))
+  coord_sf(xlim = c(-77, -65)) +
+  geom_text_repel(mapping = aes(coords_x, 
+                                coords_y, 
+                                label = region),
+                  max.overlaps = 49) +
+  theme(axis.text.x = element_blank(), # Eliminar ejes
+        axis.ticks.x = element_blank(),
+        axis.text.y = element_blank(),
+        axis.ticks.y = element_blank()) +
+  scale_fill_gradient(low = "white", high = "darkgreen", na.value = NA)
 
 # Mediana del ingreso por hogar
 left_join(chile, p.region) %>% 
+  mutate(centroid = map(geometry, st_centroid), 
+         coords = map(centroid, st_coordinates), 
+         coords_x = map_dbl(coords, 1), 
+         coords_y = map_dbl(coords, 2)) %>%
   ggplot() +
   geom_sf(aes(geometry = geometry, fill = mediana)) + 
-  coord_sf(xlim = c(-77, -65))
+  coord_sf(xlim = c(-77, -65)) +
+  geom_text_repel(mapping = aes(coords_x, 
+                                coords_y, 
+                                label = region),
+                  max.overlaps = 49) +
+  theme(axis.text.x = element_blank(), # Eliminar ejes
+        axis.ticks.x = element_blank(),
+        axis.text.y = element_blank(),
+        axis.ticks.y = element_blank()) +
+  scale_fill_gradient(low = "white", high = "darkgreen", na.value = NA)
 
 ## ¿Qué pasa en la rm? ----
 
@@ -237,17 +264,27 @@ datos4rm <- datos4 %>%
   filter(region=="13")
 
 p.rm <- datos4rm %>% group_by(comuna) %>% 
-  summarise(media = mean(ytotcorh), mediana = median(ytotcorh))
+  summarise(media = mean(ypchautcor), mediana = median(ypchautcor))
 
 # Ingreso medio del hogar
 left_join(rm, p.rm) %>% 
   ggplot() +
-  geom_sf(aes(geometry = geometry, fill = media))
+  geom_sf(aes(geometry = geometry, fill = media)) + 
+  theme(axis.text.x = element_blank(), # Eliminar ejes
+        axis.ticks.x = element_blank(),
+        axis.text.y = element_blank(),
+        axis.ticks.y = element_blank()) +
+  scale_fill_gradient(low = "white", high = "darkgreen", na.value = NA)
 
 # Mediana del ingreso por hogar
 left_join(rm, p.rm) %>% 
   ggplot() +
-  geom_sf(aes(geometry = geometry, fill = mediana))
+  geom_sf(aes(geometry = geometry, fill = mediana)) + 
+  theme(axis.text.x = element_blank(), # Eliminar ejes
+        axis.ticks.x = element_blank(),
+        axis.text.y = element_blank(),
+        axis.ticks.y = element_blank()) +
+  scale_fill_gradient(low = "white", high = "darkgreen", na.value = NA)
 
 # Nivel educacional por región --------------------------------------------
 

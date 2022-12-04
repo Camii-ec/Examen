@@ -60,6 +60,26 @@ En el análisis regional obtendremos los siguientes resultados:
 -   Análisis de pobreza por Región:
 
 ```{r, include = TRUE, message = FALSE, warning = FALSE, echo = FALSE, results = FALSE}
+# Librerias
+library(rio)
+library(tidyverse)
+library(tidyr)
+library(corrplot)
+library(ggforce)
+library(scales)
+library(raster)
+library(rworldxtra)
+library(sf)
+library(ggrepel)
+# Mapa
+rm <- chilemapas::mapa_comunas %>% 
+  filter(codigo_region == 13)
+
+chile <- chilemapas::generar_regiones()
+names(chile)[1] <- "region"
+
+names(rm)[1] <- "comuna"
+# Carga
 load("DatosP2.RData")
 datos2 <- datos1 %>% 
   mutate(region = as.character(region),
@@ -80,10 +100,96 @@ p.region <- left_join(p.region, personas, by = "region") %>%
   dplyr::select(region, pobreza, prop)
 ```
 
-Como se puede observar en *Figure 1* la mayor proporción de pobreza es la región de la Araucanía (IX Región) seguida de la región de Ñuble (XVI Región). Además podemos observar que las regiones de Aysén (XI), Magallanes (XII), Metropolitana (XIII) y Antofagasta (II).
+Como se puede observar en *Figura 1* la mayor proporción de pobreza extrema es la región de la Araucanía (IX Región) seguida de la región de Ñuble (XVI Región). Además podemos observar que las regiones de Aysén (XI), Magallanes (XII), Metropolitana (XIII) y Antofagasta (II) poseen la menor proporción de pobres extremos.
 
-```{r, message = FALSE, results = FALSE, warning = FALSE, echo = FALSE,out.width='80%',fig.align='center',fig.pos='htbp', fig.cap="\\label{fig:cap05gg02}Porcentaje de pobreza por regiones}
-left_join(chile, p.region[which(p.region$pobreza %in% c(1, 2)),]) %>%
+```{r, message = FALSE, results = FALSE, warning = FALSE, echo = FALSE, out.width='80%', fig.align='center', fig.pos='htbp', fig.cap="\\label{fig:cap05gg02}Porcentaje de pobreza extrema por regiones"}
+left_join(chile, p.region[which(p.region$pobreza == 1),]) %>%
+  mutate(centroid = map(geometry, st_centroid), 
+         coords = map(centroid, st_coordinates), 
+         coords_x = map_dbl(coords, 1), 
+         coords_y = map_dbl(coords, 2)) %>%
+  ggplot() +
+  geom_sf(aes(geometry = geometry, fill = prop)) + 
+  coord_sf(xlim = c(-77, -65)) +
+  geom_text_repel(mapping = aes(coords_x, 
+                                coords_y, 
+                                label = region),
+                  col = "black", size = 3, max.overlaps = 22) +
+  theme(axis.text.x = element_blank(), # Eliminar ejes
+        axis.ticks.x = element_blank(),
+        axis.text.y = element_blank(),
+        axis.ticks.y = element_blank()) +
+  scale_fill_gradient(low = "green", high = "brown", na.value = NA)
+```
+
+```{r, message = FALSE, results = FALSE, warning = FALSE, echo = FALSE, out.width='80%', fig.align='center', fig.pos='htbp', fig.cap="\\label{fig:cap05gg02}Porcentaje de pobreza no extrema por regiones"}
+left_join(chile, p.region[which(p.region$pobreza == 2),]) %>%
+  mutate(centroid = map(geometry, st_centroid), 
+         coords = map(centroid, st_coordinates), 
+         coords_x = map_dbl(coords, 1), 
+         coords_y = map_dbl(coords, 2)) %>%
+  ggplot() +
+  geom_sf(aes(geometry = geometry, fill = prop)) + 
+  coord_sf(xlim = c(-77, -65)) +
+  geom_text_repel(mapping = aes(coords_x, 
+                                coords_y, 
+                                label = region),
+                  col = "black", size = 3, max.overlaps = 22) +
+  theme(axis.text.x = element_blank(), # Eliminar ejes
+        axis.ticks.x = element_blank(),
+        axis.text.y = element_blank(),
+        axis.ticks.y = element_blank()) +
+  scale_fill_gradient(low = "green", high = "brown", na.value = NA)
+```
+
+```{r, message = FALSE, results = FALSE, warning = FALSE, echo = FALSE, out.width='80%', fig.align='center', fig.pos='htbp', fig.cap="\\label{fig:cap05gg02}Porcentaje de no pobreza por regiones"}
+left_join(chile, p.region[which(p.region$pobreza == 3),]) %>%
+  mutate(centroid = map(geometry, st_centroid), 
+         coords = map(centroid, st_coordinates), 
+         coords_x = map_dbl(coords, 1), 
+         coords_y = map_dbl(coords, 2)) %>%
+  ggplot() +
+  geom_sf(aes(geometry = geometry, fill = prop)) + 
+  coord_sf(xlim = c(-77, -65)) +
+  geom_text_repel(mapping = aes(coords_x, 
+                                coords_y, 
+                                label = region),
+                  col = "black", size = 3, max.overlaps = 22) +
+  theme(axis.text.x = element_blank(), # Eliminar ejes
+        axis.ticks.x = element_blank(),
+        axis.text.y = element_blank(),
+        axis.ticks.y = element_blank()) +
+  scale_fill_gradient(low = "brown", high = "green", na.value = NA)
+```
+
+\newpage
+
+-   Análisis de indice de actividad por Región:
+
+De *Figura 4* podemos observar que las regiones de Aysén (XI), Magallanes (XII) y Metropolitana (XIII) tiene mayor proporción de personas ocupadas, es decir, personas que durante la semana de referencia de la encuesta realizaron una actividad a cambio de remuneración o beneficios. De *Figura 5* logramos ver que la región Arica y Parinacota (XV), Coquimbo (IV) y Biobio (VIII) presentan mayor proporción de desocupados, es decir, personas que no son ocupadas, pero durante las 4 últimas semanas han estado en busqueda de un puesto de trabajo. Por último de *Figura 6* podemos observar que la región de Coquimbo (IV) y Biobio (VII) muestran mayor proporcion de personas inactivas, es decir, personas que no son ocupadas, ni desocupadas.
+
+```{r, include = TRUE, message = FALSE, warning = FALSE, echo = FALSE, results = FALSE}
+datos3 <- datos1 %>% 
+  mutate(region = as.character(region),
+         comuna = as.character(comuna)) 
+
+datos3$activ[is.na(datos3$activ)] = 0
+
+datos3$region <- recode(datos3$region, "1" = "01", "2" = "02", "3" = "03", 
+                        "4" = "04", "5" = "05", "6" = "06", "7" = "07", 
+                        "8" = "08", "9" = "09")
+
+personas <- datos3 %>% count(region)
+
+p.region <- datos3 %>% count(region, activ) 
+
+p.region <- left_join(p.region, personas, by = "region") %>% 
+  mutate(prop = n.x/n.y*100) %>% 
+  dplyr::select(region, activ, prop)
+```
+
+```{r, message = FALSE, results = FALSE, warning = FALSE, echo = FALSE, out.width='80%', fig.align='center', fig.pos='htbp', fig.cap="\\label{fig:cap05gg02}Porcentaje de ocupados por regiones"}
+left_join(chile, p.region[which(p.region$activ==1),]) %>% 
   mutate(centroid = map(geometry, st_centroid), 
          coords = map(centroid, st_coordinates), 
          coords_x = map_dbl(coords, 1), 
@@ -99,10 +205,146 @@ left_join(chile, p.region[which(p.region$pobreza %in% c(1, 2)),]) %>%
         axis.ticks.x = element_blank(),
         axis.text.y = element_blank(),
         axis.ticks.y = element_blank()) +
-  scale_fill_gradient(low = "green", high = "brown", na.value = NA)
+  scale_fill_gradient(low = "green", high = "orange", na.value = NA)
 ```
 
+```{r, message = FALSE, results = FALSE, warning = FALSE, echo = FALSE, out.width='80%', fig.align='center', fig.pos='htbp', fig.cap="\\label{fig:cap05gg02}Porcentaje de desocupados por regiones"}
+left_join(chile, p.region[which(p.region$activ==2),]) %>% 
+  mutate(centroid = map(geometry, st_centroid), 
+         coords = map(centroid, st_coordinates), 
+         coords_x = map_dbl(coords, 1), 
+         coords_y = map_dbl(coords, 2)) %>%
+  ggplot() +
+  geom_sf(aes(geometry = geometry, fill = prop)) + 
+  coord_sf(xlim = c(-77, -65)) +
+  geom_text_repel(mapping = aes(coords_x, 
+                                coords_y, 
+                                label = region),
+                  max.overlaps = 49) +
+  theme(axis.text.x = element_blank(), # Eliminar ejes
+        axis.ticks.x = element_blank(),
+        axis.text.y = element_blank(),
+        axis.ticks.y = element_blank()) +
+  scale_fill_gradient(low = "green", high = "orange", na.value = NA)
+```
 
+```{r, message = FALSE, results = FALSE, warning = FALSE, echo = FALSE, out.width='80%', fig.align='center', fig.pos='htbp', fig.cap="\\label{fig:cap05gg02}Porcentaje de inactivos por regiones"}
+left_join(chile, p.region[which(p.region$activ==3),]) %>% 
+  mutate(centroid = map(geometry, st_centroid), 
+         coords = map(centroid, st_coordinates), 
+         coords_x = map_dbl(coords, 1), 
+         coords_y = map_dbl(coords, 2)) %>%
+  ggplot() +
+  geom_sf(aes(geometry = geometry, fill = prop)) + 
+  coord_sf(xlim = c(-77, -65)) +
+  geom_text_repel(mapping = aes(coords_x, 
+                                coords_y, 
+                                label = region),
+                  max.overlaps = 49) +
+  theme(axis.text.x = element_blank(), # Eliminar ejes
+        axis.ticks.x = element_blank(),
+        axis.text.y = element_blank(),
+        axis.ticks.y = element_blank()) +
+  scale_fill_gradient(low = "white", high = "red", na.value = NA)
+```
+
+\newpage
+
+-   Análisis de ingresos por Región:
+
+Para este analisis usaremos 2 medidas de los ingresos, la media de estos y la mediana. Debido a que la media está sesgada por los valores extremos, en este caso las personas que tienen ingresos muy altos afectan al promedio, es por ello que también usaremos la mediana. De *Figura 7* logramos divisar que la mayor media de los ingresos se encuentra principalmente en la región Metropolitana (XIII) con un ingreso promedio mayor de 400.000 pesos, seguida de la región de Magallanes (XII). Pero analizando la *Figura 8* donde se presentan las medianas de los ingresos totales de las personas por región podemos ver que la región de Magallanes (XII) presenta mayor mediana de ingresos (más de 240.000 pesos), mientras que la región Metropolitana (XIII) tiene una mediana de ingresos entre 200.000 pesos y 240.000 pesos. Con este caso de la región Metropolitana podemos analizar esta región para tener una visión de lo que pasa al interior de esta.
+
+```{r, include = TRUE, message = FALSE, warning = FALSE, echo = FALSE, results = FALSE}
+datos4 <- datos1 %>% 
+  mutate(region = as.character(region),
+         comuna = as.character(comuna)) 
+
+datos4$region <- recode(datos4$region, "1" = "01", "2" = "02", "3" = "03", 
+                        "4" = "04", "5" = "05", "6" = "06", "7" = "07", 
+                        "8" = "08", "9" = "09")
+
+p.region <- datos4 %>% group_by(region) %>% 
+  summarise(media = mean(ypchautcor), mediana = median(ypchautcor))
+
+```
+
+```{r, message = FALSE, results = FALSE, warning = FALSE, echo = FALSE, out.width='80%', fig.align='center', fig.pos='htbp', fig.cap="\\label{fig:cap05gg02}Media de los ingresos por regiones"}
+left_join(chile, p.region) %>% 
+  mutate(centroid = map(geometry, st_centroid), 
+         coords = map(centroid, st_coordinates), 
+         coords_x = map_dbl(coords, 1), 
+         coords_y = map_dbl(coords, 2)) %>%
+  ggplot() +
+  geom_sf(aes(geometry = geometry, fill = media)) + 
+  coord_sf(xlim = c(-77, -65)) +
+  geom_text_repel(mapping = aes(coords_x, 
+                                coords_y, 
+                                label = region),
+                  max.overlaps = 49) +
+  theme(axis.text.x = element_blank(), # Eliminar ejes
+        axis.ticks.x = element_blank(),
+        axis.text.y = element_blank(),
+        axis.ticks.y = element_blank()) +
+  scale_fill_gradient(low = "white", high = "darkgreen", na.value = NA)
+```
+
+```{r, message = FALSE, results = FALSE, warning = FALSE, echo = FALSE, out.width='80%', fig.align='center', fig.pos='htbp', fig.cap="\\label{fig:cap05gg02}Mediana de los ingresos por regiones"}
+left_join(chile, p.region) %>% 
+  mutate(centroid = map(geometry, st_centroid), 
+         coords = map(centroid, st_coordinates), 
+         coords_x = map_dbl(coords, 1), 
+         coords_y = map_dbl(coords, 2)) %>%
+  ggplot() +
+  geom_sf(aes(geometry = geometry, fill = mediana)) + 
+  coord_sf(xlim = c(-77, -65)) +
+  geom_text_repel(mapping = aes(coords_x, 
+                                coords_y, 
+                                label = region),
+                  max.overlaps = 49) +
+  theme(axis.text.x = element_blank(), # Eliminar ejes
+        axis.ticks.x = element_blank(),
+        axis.text.y = element_blank(),
+        axis.ticks.y = element_blank()) +
+  scale_fill_gradient(low = "white", high = "darkgreen", na.value = NA)
+```
+
+\newpage
+
+Analizando lo que ocurre en la región metropolitana separando por comunas obtenemos las *Figura 9* y *Figura 10*. De *Figura 9* observamos que la comuna de vitacura es la que presenta ingresos medios mayores a 1.250.000 pesos, por lo tanto esta comuna es la que ingrementa la media de los ingresos en la región Metropolitana. Mientras que las demás comunas tienen un ingreso medio cercano a los 250.000 pesos.
+
+Analizando la *Figura 10* volvemos a observar que vitacura tiene la mayor mediana de los ingresos (más de 1.000.000 de pesos), después le sigen la comuna de Providencia y Las Condes con mediana de ingresos entre 750.000 y 1.000.000 pesos. Además, igual que en *Figura 9* podemos apreciar que a excepción de estas comunas la mayoría tiene un ingreso (ya sea por media o mediana) cercano a 250.000 pesos. Por lo tanto es un aspecto a considerar que en santiago es un sector el cual presenta mayores ingresos, lo que afecta en la comparación entre los ingresos de las regiones
+
+```{r, include = TRUE, message = FALSE, warning = FALSE, echo = FALSE, results = FALSE}
+datos4rm <- datos4 %>% 
+  filter(region=="13")
+
+p.rm <- datos4rm %>% group_by(comuna) %>% 
+  summarise(media = mean(ypchautcor), mediana = median(ypchautcor))
+```
+
+```{r, message = FALSE, results = FALSE, warning = FALSE, echo = FALSE, out.width='80%', fig.align='center', fig.pos='htbp', fig.cap="\\label{fig:cap05gg02}Media de los ingresos por comunas de Santiago"}
+left_join(rm, p.rm) %>% 
+  ggplot() +
+  geom_sf(aes(geometry = geometry, fill = media)) + 
+  theme(axis.text.x = element_blank(), # Eliminar ejes
+        axis.ticks.x = element_blank(),
+        axis.text.y = element_blank(),
+        axis.ticks.y = element_blank()) +
+  scale_fill_gradient(low = "white", high = "darkgreen", na.value = NA)
+```
+
+```{r, message = FALSE, results = FALSE, warning = FALSE, echo = FALSE, out.width='80%', fig.align='center', fig.pos='htbp', fig.cap="\\label{fig:cap05gg02}Mediana de los ingresos por comunas de Santiago"}
+left_join(rm, p.rm) %>% 
+  ggplot() +
+  geom_sf(aes(geometry = geometry, fill = mediana)) + 
+  theme(axis.text.x = element_blank(), # Eliminar ejes
+        axis.ticks.x = element_blank(),
+        axis.text.y = element_blank(),
+        axis.ticks.y = element_blank()) +
+  scale_fill_gradient(low = "white", high = "darkgreen", na.value = NA)
+```
+
+\newpage
 
 # Conclusión
 
