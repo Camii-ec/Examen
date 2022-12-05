@@ -650,6 +650,8 @@ left_join(chile, p.region[which(p.region$educ==8),]) %>%
   scale_fill_gradient(high = "blue", low = "darkorange", na.value = NA)
 ```
 
+\newpage
+
 Revisando @fig-10-1 se logra ver que las regiones de Antofagasta (II), Valparaiso (V), Metropolotana (XIII) y Ñuble (XVI) presentan mayor porcentaje de personas que tienen estudios profesionales incompletos. Por contraparte, las regiones de Coquimbo (IV) y Aysén (XI) presentan el menor porcentaje de personas con estudios profesionales incompletos.
 
 Observando @fig-10-2 podemos denotar que la región Metropolitana (XIII) es la única región con mayor porcentaje de personas con postgrados incompletos. Mientras que las demás regiones sus porcentajes son menores al 0.3%. Es interesante, igualmente, ver que este porcentaje no es mayor al 0.5% todos y que el más alto está en la región metropolitana.
@@ -788,7 +790,105 @@ left_join(rm, p.com) %>%
   scale_fill_gradient(low = "darkorange", high = "blue", na.value = NA)
 ```
 
-Con todos los datos anteriores podemos ver semejanzas, de que existen una relación entre los ingresos, la pobreza, la demografía, los estudios, entre otros
+\newpage
+
+Con todos los datos anteriores podemos ver semejanzas, de que existen una relación entre los ingresos, la pobreza, la demografía, los estudios, entre otros. Tal como muestra @fig-13 con las correlaciones de las variables ocupadas.
+
+Podemos observar en @fig-13 la correlación que existe entre la variable de Allegamiento Interno y la variable de número de personas en el hogar, la variable de escolaridad y condición de actividad, hacinamiento y Allegamiento Externo, entre otros.
+
+```{r, include = TRUE, message = FALSE, warning = FALSE, echo = FALSE, results = FALSE}
+load("DatosP2.RData")
+
+datos1[is.na(datos1)] <- 0
+
+
+## Para balancear la muestra, consideramos a 20 mil personas no pobres al azar y 20 mil personas pobres (extremas y no extremas) al azar.
+muestra <- function(datos){
+  pobres <- which(datos$pobreza %in% c(1,2))
+  nopobres <- which(datos$pobreza==3)
+  
+  n1 <- sample(pobres, 20000)
+  n2 <- sample(nopobres, 20000)
+  n <- sort(c(n1,n2))
+  
+  datitos <- datos[n,]
+  
+  return(datitos)
+}
+
+datazo <- muestra(datos1)
+
+ingreso <- datazo[,14]
+pobreza <- recode(datazo[,13], `1` = "1", `2` = "1", `3` = "2")
+salmon <- datazo[,-c(13,14)]
+
+sigma <- cor(scale(salmon))
+
+valp <- eigen(sigma)$values
+vecp <- eigen(sigma)$vectors
+
+prop.var <- valp/sum(valp)
+```
+
+```{r, message = FALSE, results = FALSE, warning = FALSE, echo = FALSE}
+#| label: fig-13
+#| fig-cap: "Correlograma de las variables"
+corrplot::corrplot(sigma)
+```
+
+Con estos datos se puede plantear un modelo factorial (Debido a que tratamos con variables categóricas), con ellos poder ver cuanto son las cantidades de factores necesarios para describir el modelo con la mayor variablidad posible.
+
+Tal como describimos en ***Metodología***, utilizaremos el método de varianza explicada por factores. Tal como muestra @fig-14 se muestra el porcentaje de varianza explicada por cada factor.
+
+```{r, message = FALSE, results = FALSE, warning = FALSE, echo = FALSE}
+#| label: fig-14
+#| fig-cap: "Porcentaje de varianza explicada por cada factor"
+#| layout: [[-20,60,-20]]
+cbind(Factores = 1:12,
+      Varianzas = prop.var) %>%
+  as.data.frame() %>%
+  ggplot()+
+  theme_bw() +
+  geom_point(aes(Factores, Varianzas)) +
+  scale_x_continuous(breaks = c(1:12),
+                     labels = 1:12)
+```
+
+Con @fig-14 mostramos la varianza explicada por cada factor, a simple vista no logramos observar la cantidad de factores necesarios según el criterio de varianza explicada. Es por esta razón que creamos @fig-15 donde se muestran las varianzas explicadas por los factores acumulados, es decir la varianza explicado por el factor más todos los que le anteceden.
+
+```{r, message = FALSE, results = FALSE, warning = FALSE, echo = FALSE}
+#| label: fig-15
+#| fig-cap: "Porcentaje de varianza explicada por cada factor acumulado"
+#| layout: [[-20,60,-20]]
+cbind(Factores = 1:12,
+      Varianzas = cumsum(prop.var)) %>%
+  as.data.frame() %>%
+  ggplot()+
+  theme_bw() +
+  geom_point(aes(Factores, Varianzas)) +
+  scale_x_continuous(breaks = c(1:12),
+                     labels = 1:12) +
+  geom_hline(yintercept = 0.70, col = "red", lwd = 1) +
+  geom_hline(yintercept = 0.90, col = "red", lwd = 1) +
+  geom_segment(x = 8, y = 0,
+               xend = 8, yend = cumsum(prop.var)[8],
+               color = "blue",
+               linetype = 2,
+               lwd = 1) +
+  geom_segment(x = 0, y = cumsum(prop.var)[8],
+               xend = 8, yend = cumsum(prop.var)[8],
+               color = "blue",
+               linetype = 2,
+               lwd = 1)+
+  geom_text(x = 8.5, 
+            y = cumsum(prop.var)[8], 
+            label = round(cumsum(prop.var)[8], 2),
+            col = "blue", size = 2)
+```
+
+Como podemos observar en @fig-15 dado que buscamos una varianza explicada entre un 70% y 90%. Con ese intervalo vemos que con 8 factores tenemos la mayor varianza explicada que se encuentra dentro del rango acordad. Con un total de 8 factores logramos explicar el 86%.
+
+Por ello nos quedaremos solamente con 8 factores
 
 \newpage
 
@@ -796,7 +896,7 @@ Con todos los datos anteriores podemos ver semejanzas, de que existen una relaci
 
 En conclusión, el Emiliano vale pico, pero no tanto como Aravena.
 
-# Bibliografía 
+# Bibliografía (EDITAR DESPUÉS)
 
 1.  https://www.fundaciontrascender.cl/2018/12/18/que-es-pobreza-multidimensional/
 2.  Libro de códigos Base de Datos Casen 2017

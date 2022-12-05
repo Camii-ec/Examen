@@ -326,6 +326,7 @@ left_join(chile, p.region[which(p.region$educ==0),]) %>%
         axis.ticks.y = element_blank()) +
   scale_fill_gradient(low = "blue", high = "darkorange", na.value = NA)
 
+
 # Básica incompleta
 left_join(chile, p.region[which(p.region$educ==1),]) %>% 
   mutate(centroid = map(geometry, st_centroid), 
@@ -607,13 +608,46 @@ sigma <- cor(scale(salmon))
 
 corrplot::corrplot(sigma)
 
+
 valp <- eigen(sigma)$values
 vecp <- eigen(sigma)$vectors
 
 prop.var <- valp/sum(valp)
 
+cbind(Factores = 1:12,
+      Varianzas = prop.var) %>%
+  as.data.frame() %>%
+  ggplot()+
+  theme_bw() +
+  geom_point(aes(Factores, Varianzas)) +
+  scale_x_continuous(breaks = c(1:12),
+                     labels = 1:12)
+
 ## Queremos explicar entre un 70% y un 90% de la varianza, así que vemos con cuántos componentes logramos eso
-cumsum(prop.var)
+cbind(Factores = 1:12,
+      Varianzas = cumsum(prop.var)) %>%
+  as.data.frame() %>%
+  ggplot()+
+  theme_bw() +
+  geom_point(aes(Factores, Varianzas)) +
+  scale_x_continuous(breaks = c(1:12),
+                     labels = 1:12) +
+  geom_hline(yintercept = 0.70, col = "red", lwd = 1) +
+  geom_hline(yintercept = 0.90, col = "red", lwd = 1) +
+  geom_segment(x = 8, y = 0,
+               xend = 8, yend = cumsum(prop.var)[8],
+               color = "blue",
+               linetype = 2,
+               lwd = 1) +
+  geom_segment(x = 0, y = cumsum(prop.var)[8],
+               xend = 8, yend = cumsum(prop.var)[8],
+               color = "blue",
+               linetype = 2,
+               lwd = 1)+
+  geom_text(x = 8.5, 
+            y = cumsum(prop.var)[8], 
+            label = round(cumsum(prop.var)[8], 2),
+            col = "blue", size = 2)
 
 # Así, nos quedamos únicamente con 8
 valp <- eigen(sigma)$values[1:8]
@@ -650,7 +684,9 @@ data.frame(r) %>% ggplot(aes(x=1:12)) +
   theme_bw() +
   labs(title = "Correlaciones de las componentes principales con las variables",
        color = "Componentes") +
-  scale_color_manual(values = rainbow(8)) 
+  scale_color_manual(values = rainbow(8)) +
+  scale_x_continuous(breaks = c(1:12),
+                     labels = 1:12)
 
 ## Varianza explicada para cada variable
 rowSums(r^2)
@@ -663,3 +699,5 @@ plot(suma)
 b <- data.frame(suma, pobreza)
 
 b %>% filter(suma > 11500)
+
+
