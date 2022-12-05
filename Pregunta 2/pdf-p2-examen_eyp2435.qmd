@@ -102,7 +102,10 @@ p.region <- left_join(p.region, personas, by = "region") %>%
 
 Como se puede observar en *Figura 1* la mayor proporción de pobreza extrema es la región de la Araucanía (IX Región) seguida de la región de Ñuble (XVI Región). Además podemos observar que las regiones de Aysén (XI), Magallanes (XII), Metropolitana (XIII) y Antofagasta (II) poseen la menor proporción de pobres extremos.
 
-```{r, message = FALSE, results = FALSE, warning = FALSE, echo = FALSE, out.width='80%', fig.align='center', fig.pos='htbp', fig.cap="\\label{fig:cap05gg02}Porcentaje de pobreza extrema por regiones"}
+```{r, message = FALSE, results = FALSE, warning = FALSE, echo = FALSE}
+#| label: fig-1
+#| fig-cap: "Porcentaje de pobreza extrema por regiones"
+
 left_join(chile, p.region[which(p.region$pobreza == 1),]) %>%
   mutate(centroid = map(geometry, st_centroid), 
          coords = map(centroid, st_coordinates), 
@@ -119,10 +122,15 @@ left_join(chile, p.region[which(p.region$pobreza == 1),]) %>%
         axis.ticks.x = element_blank(),
         axis.text.y = element_blank(),
         axis.ticks.y = element_blank()) +
-  scale_fill_gradient(low = "green", high = "brown", na.value = NA)
+  scale_fill_gradient(low = "green", high = "brown", na.value = NA)+
+  theme_bw()
 ```
 
-```{r, message = FALSE, results = FALSE, warning = FALSE, echo = FALSE, out.width='80%', fig.align='center', fig.pos='htbp', fig.cap="\\label{fig:cap05gg02}Porcentaje de pobreza no extrema por regiones"}
+```{r, message = FALSE, results = FALSE, warning = FALSE, echo = FALSE}
+#| label: fig-2
+#| fig-cap: "Porcentaje de pobreza no extrema por regiones"
+
+
 left_join(chile, p.region[which(p.region$pobreza == 2),]) %>%
   mutate(centroid = map(geometry, st_centroid), 
          coords = map(centroid, st_coordinates), 
@@ -139,10 +147,14 @@ left_join(chile, p.region[which(p.region$pobreza == 2),]) %>%
         axis.ticks.x = element_blank(),
         axis.text.y = element_blank(),
         axis.ticks.y = element_blank()) +
-  scale_fill_gradient(low = "green", high = "brown", na.value = NA)
+  scale_fill_gradient(low = "green", high = "brown", na.value = NA)+
+  theme_bw()
 ```
 
-```{r, message = FALSE, results = FALSE, warning = FALSE, echo = FALSE, out.width='80%', fig.align='center', fig.pos='htbp', fig.cap="\\label{fig:cap05gg02}Porcentaje de no pobreza por regiones"}
+```{r, message = FALSE, results = FALSE, warning = FALSE, echo = FALSE}
+#| label: fig-3
+#| fig-cap: "Porcentaje de no pobreza por regiones"
+
 left_join(chile, p.region[which(p.region$pobreza == 3),]) %>%
   mutate(centroid = map(geometry, st_centroid), 
          coords = map(centroid, st_coordinates), 
@@ -159,7 +171,8 @@ left_join(chile, p.region[which(p.region$pobreza == 3),]) %>%
         axis.ticks.x = element_blank(),
         axis.text.y = element_blank(),
         axis.ticks.y = element_blank()) +
-  scale_fill_gradient(low = "brown", high = "green", na.value = NA)
+  scale_fill_gradient(low = "brown", high = "green", na.value = NA)+
+  theme_bw()
 ```
 
 \newpage
@@ -188,7 +201,10 @@ p.region <- left_join(p.region, personas, by = "region") %>%
   dplyr::select(region, activ, prop)
 ```
 
-```{r, message = FALSE, results = FALSE, warning = FALSE, echo = FALSE, out.width='80%', fig.align='center', fig.pos='htbp', fig.cap="\\label{fig:cap05gg02}Porcentaje de ocupados por regiones"}
+```{r, message = FALSE, results = FALSE, warning = FALSE, echo = FALSE}
+#| label: fig-4
+#| fig-cap: "Porcentaje de ocupados por regiones"
+
 left_join(chile, p.region[which(p.region$activ==1),]) %>% 
   mutate(centroid = map(geometry, st_centroid), 
          coords = map(centroid, st_coordinates), 
@@ -205,10 +221,15 @@ left_join(chile, p.region[which(p.region$activ==1),]) %>%
         axis.ticks.x = element_blank(),
         axis.text.y = element_blank(),
         axis.ticks.y = element_blank()) +
-  scale_fill_gradient(low = "green", high = "orange", na.value = NA)
+  scale_fill_gradient(low = "green", high = "orange", na.value = NA)+
+  theme_bw()
 ```
 
-```{r, message = FALSE, results = FALSE, warning = FALSE, echo = FALSE, out.width='80%', fig.align='center', fig.pos='htbp', fig.cap="\\label{fig:cap05gg02}Porcentaje de desocupados por regiones"}
+```{r, message = FALSE, results = FALSE, warning = FALSE, echo = FALSE}
+#| label: fig-5
+#| fig-cap: "Porcentaje de desocupados por regiones"
+
+
 left_join(chile, p.region[which(p.region$activ==2),]) %>% 
   mutate(centroid = map(geometry, st_centroid), 
          coords = map(centroid, st_coordinates), 
@@ -225,10 +246,14 @@ left_join(chile, p.region[which(p.region$activ==2),]) %>%
         axis.ticks.x = element_blank(),
         axis.text.y = element_blank(),
         axis.ticks.y = element_blank()) +
-  scale_fill_gradient(low = "green", high = "orange", na.value = NA)
+  scale_fill_gradient(low = "green", high = "orange", na.value = NA)+
+  theme_bw()
 ```
 
 ```{r, message = FALSE, results = FALSE, warning = FALSE, echo = FALSE, out.width='80%', fig.align='center', fig.pos='htbp', fig.cap="\\label{fig:cap05gg02}Porcentaje de inactivos por regiones"}
+#| label: fig-6
+#| fig-cap: "Porcentaje de inactivos por regiones"
+
 left_join(chile, p.region[which(p.region$activ==3),]) %>% 
   mutate(centroid = map(geometry, st_centroid), 
          coords = map(centroid, st_coordinates), 
@@ -245,7 +270,8 @@ left_join(chile, p.region[which(p.region$activ==3),]) %>%
         axis.ticks.x = element_blank(),
         axis.text.y = element_blank(),
         axis.ticks.y = element_blank()) +
-  scale_fill_gradient(low = "white", high = "red", na.value = NA)
+  scale_fill_gradient(low = "white", high = "red", na.value = NA)+
+  theme_bw()
 ```
 
 \newpage
@@ -269,6 +295,10 @@ p.region <- datos4 %>% group_by(region) %>%
 ```
 
 ```{r, message = FALSE, results = FALSE, warning = FALSE, echo = FALSE, out.width='80%', fig.align='center', fig.pos='htbp', fig.cap="\\label{fig:cap05gg02}Media de los ingresos por regiones"}
+#| label: fig-7
+#| fig-cap: "Media de los ingresos por regiones"
+
+
 left_join(chile, p.region) %>% 
   mutate(centroid = map(geometry, st_centroid), 
          coords = map(centroid, st_coordinates), 
@@ -285,10 +315,14 @@ left_join(chile, p.region) %>%
         axis.ticks.x = element_blank(),
         axis.text.y = element_blank(),
         axis.ticks.y = element_blank()) +
-  scale_fill_gradient(low = "white", high = "darkgreen", na.value = NA)
+  scale_fill_gradient(low = "white", high = "darkgreen", na.value = NA)+
+  theme_bw()
 ```
 
-```{r, message = FALSE, results = FALSE, warning = FALSE, echo = FALSE, out.width='80%', fig.align='center', fig.pos='htbp', fig.cap="\\label{fig:cap05gg02}Mediana de los ingresos por regiones"}
+```{r, message = FALSE, results = FALSE, warning = FALSE, echo = FALSE}
+#| label: fig-8
+#| fig-cap: "Mediana de los ingresos por regiones"
+
 left_join(chile, p.region) %>% 
   mutate(centroid = map(geometry, st_centroid), 
          coords = map(centroid, st_coordinates), 
@@ -305,7 +339,8 @@ left_join(chile, p.region) %>%
         axis.ticks.x = element_blank(),
         axis.text.y = element_blank(),
         axis.ticks.y = element_blank()) +
-  scale_fill_gradient(low = "white", high = "darkgreen", na.value = NA)
+  scale_fill_gradient(low = "white", high = "darkgreen", na.value = NA)+
+  theme_bw()
 ```
 
 \newpage
@@ -322,7 +357,11 @@ p.rm <- datos4rm %>% group_by(comuna) %>%
   summarise(media = mean(ypchautcor), mediana = median(ypchautcor))
 ```
 
-```{r, message = FALSE, results = FALSE, warning = FALSE, echo = FALSE, out.width='80%', fig.align='center', fig.pos='htbp', fig.cap="\\label{fig:cap05gg02}Media de los ingresos por comunas de Santiago"}
+```{r, message = FALSE, results = FALSE, warning = FALSE, echo = FALSE}
+#| label: fig-9
+#| fig-cap: "Media de los ingresos por comunas de Santiago"
+
+
 left_join(rm, p.rm) %>% 
   ggplot() +
   geom_sf(aes(geometry = geometry, fill = media)) + 
@@ -330,10 +369,13 @@ left_join(rm, p.rm) %>%
         axis.ticks.x = element_blank(),
         axis.text.y = element_blank(),
         axis.ticks.y = element_blank()) +
-  scale_fill_gradient(low = "white", high = "darkgreen", na.value = NA)
+  scale_fill_gradient(low = "white", high = "darkgreen", na.value = NA)+
+  theme_bw()
 ```
 
-```{r, message = FALSE, results = FALSE, warning = FALSE, echo = FALSE, out.width='80%', fig.align='center', fig.pos='htbp', fig.cap="\\label{fig:cap05gg02}Mediana de los ingresos por comunas de Santiago"}
+```{r, message = FALSE, results = FALSE, warning = FALSE, echo = FALSE}
+#| label: fig-10
+#| fig-cap: "Mediana de los ingresos por comunas de Santiag0"
 left_join(rm, p.rm) %>% 
   ggplot() +
   geom_sf(aes(geometry = geometry, fill = mediana)) + 
@@ -341,7 +383,8 @@ left_join(rm, p.rm) %>%
         axis.ticks.x = element_blank(),
         axis.text.y = element_blank(),
         axis.ticks.y = element_blank()) +
-  scale_fill_gradient(low = "white", high = "darkgreen", na.value = NA)
+  scale_fill_gradient(low = "white", high = "darkgreen", na.value = NA) +
+  theme_bw()
 ```
 
 \newpage
