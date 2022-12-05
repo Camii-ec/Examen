@@ -57,7 +57,7 @@ Además se realizará un análisis factorial (debido a que los datos son categó
 
 En el análisis regional obtendremos los siguientes resultados:
 
--   Análisis de pobreza por Región:
+## Análisis de pobreza por Región:
 
 ```{r, include = TRUE, message = FALSE, warning = FALSE, echo = FALSE, results = FALSE}
 # Librerias
@@ -100,15 +100,20 @@ p.region <- left_join(p.region, personas, by = "region") %>%
   dplyr::select(region, pobreza, prop)
 ```
 
-Como se puede observar en @fig-1 la mayor porcentaje de pobreza extrema es la región de la Araucanía (IX Región) seguida de la región de Ñuble (XVI Región). Además podemos observar que las regiones de Aysén (XI), Magallanes (XII), Metropolitana (XIII) y Antofagasta (II) poseen la menor porcentaje de pobres extremos.
+Como se puede observar en @fig-1-1 la mayor porcentaje de pobreza extrema es la región de la Araucanía (IX Región) seguida de la región de Ñuble (XVI Región). Además podemos observar que las regiones de Aysén (XI), Magallanes (XII), Metropolitana (XIII) y Antofagasta (II) poseen la menor porcentaje de pobres extremos.
 
-Ahora analizando @fig-2 se muestra aquellas regiones con pobreza no extrema, y observamos que son las mismas mencionadas anteriormente, al igual que las regiones que poseen menor porcentaje de pobreza no extrema.
+Ahora analizando @fig-1-2 se muestra aquellas regiones con pobreza no extrema, y observamos que son las mismas mencionadas anteriormente, al igual que las regiones que poseen menor porcentaje de pobreza no extrema.
 
-Después de observar las figuras anteriores, al analizar @fig-3 es ocurre lo que era de esperar sobre las regiones con mayor porcentaje de no pobreza, aquellas regiones que obtuvieron una baja porcentaje de pobreza, valga la redundancia, tienen alta porcentaje de no pobreza y viceversa.
+Después de observar las figuras anteriores, al analizar @fig-1-3 es ocurre lo que era de esperar sobre las regiones con mayor porcentaje de no pobreza, aquellas regiones que obtuvieron una baja porcentaje de pobreza, valga la redundancia, tienen alta porcentaje de no pobreza y viceversa.
 
 ```{r, message = FALSE, results = FALSE, warning = FALSE, echo = FALSE}
 #| label: fig-1
-#| fig-cap: "Porcentaje de pobreza extrema por regiones"
+#| fig-cap: "Pobreza por regiones"
+#| fig-subcap: 
+#|         - "Extrema"
+#|         - "No extrema"
+#|         - "No pobreza"
+#| layout: [[1,1,1]]
 
 left_join(chile, p.region[which(p.region$pobreza == 1),]) %>%
   mutate(centroid = map(geometry, st_centroid), 
@@ -128,14 +133,7 @@ left_join(chile, p.region[which(p.region$pobreza == 1),]) %>%
         axis.ticks.x = element_blank(),
         axis.text.y = element_blank(),
         axis.ticks.y = element_blank()) +
-  scale_fill_gradient(low = "green", high = "saddlebrown", na.value = NA)
-  
-```
-
-```{r, message = FALSE, results = FALSE, warning = FALSE, echo = FALSE}
-#| label: fig-2
-#| fig-cap: "Porcentaje de pobreza no extrema por regiones"
-
+  scale_fill_gradient(low = "green", high = "red", na.value = NA)
 
 left_join(chile, p.region[which(p.region$pobreza == 2),]) %>%
   mutate(centroid = map(geometry, st_centroid), 
@@ -155,12 +153,7 @@ left_join(chile, p.region[which(p.region$pobreza == 2),]) %>%
         axis.ticks.x = element_blank(),
         axis.text.y = element_blank(),
         axis.ticks.y = element_blank()) +
-  scale_fill_gradient(low = "green", high = "saddlebrown", na.value = NA)
-```
-
-```{r, message = FALSE, results = FALSE, warning = FALSE, echo = FALSE}
-#| label: fig-3
-#| fig-cap: "Porcentaje de no pobreza por regiones"
+  scale_fill_gradient(low = "green", high = "red", na.value = NA)
 
 left_join(chile, p.region[which(p.region$pobreza == 3),]) %>%
   mutate(centroid = map(geometry, st_centroid), 
@@ -180,14 +173,13 @@ left_join(chile, p.region[which(p.region$pobreza == 3),]) %>%
         axis.ticks.x = element_blank(),
         axis.text.y = element_blank(),
         axis.ticks.y = element_blank()) +
-  scale_fill_gradient(low = "saddlebrown", high = "green", na.value = NA)
+  scale_fill_gradient(low = "red", high = "green", na.value = NA)
+  
 ```
 
-\newpage
+## Análisis de indice de actividad por Región:
 
--   Análisis de indice de actividad por Región:
-
-De @fig-4 podemos observar que las regiones de Aysén (XI), Magallanes (XII) y Metropolitana (XIII) tiene mayor porcentaje de personas ocupadas, es decir, personas que durante la semana de referencia de la encuesta realizaron una actividad a cambio de remuneración o beneficios. De @fig-5 logramos ver que la región Arica y Parinacota (XV), Coquimbo (IV) y Biobio (VIII) presentan mayor porcentaje de desocupados, es decir, personas que no son ocupadas, pero durante las 4 últimas semanas han estado en busqueda de un puesto de trabajo. Por último de @fig-6 podemos observar que la región de Coquimbo (IV) y Biobio (VII) muestran mayor proporcion de personas inactivas, es decir, personas que no son ocupadas, ni desocupadas.
+De @fig-2-1 podemos observar que las regiones de Aysén (XI), Magallanes (XII) y Metropolitana (XIII) tiene mayor porcentaje de personas ocupadas, es decir, personas que durante la semana de referencia de la encuesta realizaron una actividad a cambio de remuneración o beneficios. De @fig-2-2 logramos ver que la región Arica y Parinacota (XV), Coquimbo (IV) y Biobio (VIII) presentan mayor porcentaje de desocupados, es decir, personas que no son ocupadas, pero durante las 4 últimas semanas han estado en busqueda de un puesto de trabajo. Por último de @fig-2-3 podemos observar que la región de Coquimbo (IV) y Biobio (VII) muestran mayor proporcion de personas inactivas, es decir, personas que no son ocupadas, ni desocupadas.
 
 ```{r, include = TRUE, message = FALSE, warning = FALSE, echo = FALSE, results = FALSE}
 datos3 <- datos1 %>% 
@@ -210,8 +202,13 @@ p.region <- left_join(p.region, personas, by = "region") %>%
 ```
 
 ```{r, message = FALSE, results = FALSE, warning = FALSE, echo = FALSE}
-#| label: fig-4
-#| fig-cap: "Porcentaje de ocupados por regiones"
+#| label: fig-2
+#| fig-cap: "Índice de actividad por regiones"
+#| fig-subcap: 
+#|         - "Ocupados"
+#|         - "Desocupados"
+#|         - "Inactivos"
+#| layout: [[1,1,1]]
 
 left_join(chile, p.region[which(p.region$activ==1),]) %>% 
   mutate(centroid = map(geometry, st_centroid), 
@@ -232,12 +229,6 @@ left_join(chile, p.region[which(p.region$activ==1),]) %>%
         axis.text.y = element_blank(),
         axis.ticks.y = element_blank()) +
   scale_fill_gradient(low = "green", high = "orange", na.value = NA)
-```
-
-```{r, message = FALSE, results = FALSE, warning = FALSE, echo = FALSE}
-#| label: fig-5
-#| fig-cap: "Porcentaje de desocupados por regiones"
-
 
 left_join(chile, p.region[which(p.region$activ==2),]) %>% 
   mutate(centroid = map(geometry, st_centroid), 
@@ -258,11 +249,6 @@ left_join(chile, p.region[which(p.region$activ==2),]) %>%
         axis.text.y = element_blank(),
         axis.ticks.y = element_blank()) +
   scale_fill_gradient(low = "green", high = "orange", na.value = NA)
-```
-
-```{r, message = FALSE, results = FALSE, warning = FALSE, echo = FALSE}
-#| label: fig-6
-#| fig-cap: "Porcentaje de inactivos por regiones"
 
 left_join(chile, p.region[which(p.region$activ==3),]) %>% 
   mutate(centroid = map(geometry, st_centroid), 
@@ -285,11 +271,9 @@ left_join(chile, p.region[which(p.region$activ==3),]) %>%
   scale_fill_gradient(low = "white", high = "red", na.value = NA)
 ```
 
-\newpage
+## Análisis de ingresos por Región:
 
--   Análisis de ingresos por Región:
-
-Para este analisis usaremos 2 medidas de los ingresos, la media de estos y la mediana. Debido a que la media está sesgada por los valores extremos, en este caso las personas que tienen ingresos muy altos afectan al promedio, es por ello que también usaremos la mediana. De @fig-7 logramos divisar que la mayor media de los ingresos se encuentra principalmente en la región Metropolitana (XIII) con un ingreso promedio mayor de 400.000 pesos, seguida de la región de Magallanes (XII). Pero analizando la @fig-8 donde se presentan las medianas de los ingresos totales de las personas por región podemos ver que la región de Magallanes (XII) presenta mayor mediana de ingresos (más de 240.000 pesos), mientras que la región Metropolitana (XIII) tiene una mediana de ingresos entre 200.000 pesos y 240.000 pesos. Con este caso de la región Metropolitana podemos analizar esta región para tener una visión de lo que pasa al interior de esta.
+Para este analisis usaremos 2 medidas de los ingresos, la media de estos y la mediana. Debido a que la media está sesgada por los valores extremos, en este caso las personas que tienen ingresos muy altos afectan al promedio, es por ello que también usaremos la mediana. De @fig-3-1 logramos divisar que la mayor media de los ingresos se encuentra principalmente en la región Metropolitana (XIII) con un ingreso promedio mayor de 400.000 pesos, seguida de la región de Magallanes (XII). Pero analizando la @fig-3-2 donde se presentan las medianas de los ingresos totales de las personas por región podemos ver que la región de Magallanes (XII) presenta mayor mediana de ingresos (más de 240.000 pesos), mientras que la región Metropolitana (XIII) tiene una mediana de ingresos entre 200.000 pesos y 240.000 pesos. Con este caso de la región Metropolitana podemos analizar esta región para tener una visión de lo que pasa al interior de esta.
 
 ```{r, include = TRUE, message = FALSE, warning = FALSE, echo = FALSE, results = FALSE}
 datos4 <- datos1 %>% 
@@ -306,8 +290,12 @@ p.region <- datos4 %>% group_by(region) %>%
 ```
 
 ```{r, message = FALSE, results = FALSE, warning = FALSE, echo = FALSE, }
-#| label: fig-7
-#| fig-cap: "Media de los ingresos por regiones"
+#| label: fig-3
+#| fig-cap: "Ingresos por regiones"
+#| fig-subcap: 
+#|         - "Medios"
+#|         - "Medianos"
+#| layout: [[1,1]]
 
 
 left_join(chile, p.region) %>% 
@@ -329,11 +317,6 @@ left_join(chile, p.region) %>%
         axis.text.y = element_blank(),
         axis.ticks.y = element_blank()) +
   scale_fill_gradient(low = "white", high = "darkgreen", na.value = NA)
-```
-
-```{r, message = FALSE, results = FALSE, warning = FALSE, echo = FALSE}
-#| label: fig-8
-#| fig-cap: "Mediana de los ingresos por regiones"
 
 left_join(chile, p.region) %>% 
   mutate(centroid = map(geometry, st_centroid), 
@@ -358,9 +341,9 @@ left_join(chile, p.region) %>%
 
 \newpage
 
-Analizando lo que ocurre en la región metropolitana separando por comunas obtenemos las @fig-9 y @fig-10. De @fig-9 observamos que la comuna de vitacura es la que presenta ingresos medios mayores a 1.250.000 pesos, por lo tanto esta comuna es la que ingrementa la media de los ingresos en la región Metropolitana. Mientras que las demás comunas tienen un ingreso medio cercano a los 250.000 pesos.
+Analizando lo que ocurre en la región metropolitana separando por comunas obtenemos las @fig-4-1 y @fig-4-2. De @fig-4-1 observamos que la comuna de vitacura es la que presenta ingresos medios mayores a 1.250.000 pesos, por lo tanto esta comuna es la que ingrementa la media de los ingresos en la región Metropolitana. Mientras que las demás comunas tienen un ingreso medio cercano a los 250.000 pesos.
 
-Analizando la @fig-10 volvemos a observar que vitacura tiene la mayor mediana de los ingresos (más de 1.000.000 de pesos), después le sigen la comuna de Providencia y Las Condes con mediana de ingresos entre 750.000 y 1.000.000 pesos. Además, igual que en @fig-9 podemos apreciar que a excepción de estas comunas la mayoría tiene un ingreso (ya sea por media o mediana) cercano a 250.000 pesos. Por lo tanto es un aspecto a considerar que en santiago es un sector el cual presenta mayores ingresos, lo que afecta en la comparación entre los ingresos de las regiones.
+Analizando la @fig-4-2 volvemos a observar que vitacura tiene la mayor mediana de los ingresos (más de 1.000.000 de pesos), después le sigen la comuna de Providencia y Las Condes con mediana de ingresos entre 750.000 y 1.000.000 pesos. Además, igual que en @fig-4-1 podemos apreciar que a excepción de estas comunas la mayoría tiene un ingreso (ya sea por media o mediana) cercano a 250.000 pesos. Por lo tanto es un aspecto a considerar que en santiago es un sector el cual presenta mayores ingresos, lo que afecta en la comparación entre los ingresos de las regiones.
 
 ```{r, include = TRUE, message = FALSE, warning = FALSE, echo = FALSE, results = FALSE}
 datos4rm <- datos4 %>% 
@@ -371,8 +354,12 @@ p.rm <- datos4rm %>% group_by(comuna) %>%
 ```
 
 ```{r, message = FALSE, results = FALSE, warning = FALSE, echo = FALSE}
-#| label: fig-9
-#| fig-cap: "Media de los ingresos por comunas de Santiago"
+#| label: fig-4
+#| fig-cap: "Ingresos por comunas de Santiago"
+#| fig-subcap: 
+#|         - "Medios"
+#|         - "Medianos"
+#| layout: [[1,1]]
 
 
 left_join(rm, p.rm) %>% 
@@ -385,11 +372,7 @@ left_join(rm, p.rm) %>%
         axis.text.y = element_blank(),
         axis.ticks.y = element_blank()) +
   scale_fill_gradient(low = "white", high = "darkgreen", na.value = NA)
-```
 
-```{r, message = FALSE, results = FALSE, warning = FALSE, echo = FALSE}
-#| label: fig-10
-#| fig-cap: "Mediana de los ingresos por comunas de Santiago"
 left_join(rm, p.rm) %>% 
   ggplot() +
   geom_sf(aes(geometry = geometry, fill = mediana)) + 
@@ -404,33 +387,7 @@ left_join(rm, p.rm) %>%
 
 \newpage
 
--   Análisis educacional por Región:
-
-De @fig-11 podemos observar que las regiones de Aysén (XI) y Tarapacá (I) presentan mayor porcentajes de personas que no completaron ningún nivel de educación. Luego la región de Magallanes (XII) es la menor porcentaje de personas que no completaron ningún nivel educacional.
-
-De @fig-12 se visualiza que las regiones de Maule (VIII), La Araucanía (IX) y de Los Lagos (X) presentan mayor porcentaje de personas que no han terminado la enseñanza básica. Es importante destacar que los porcentajes de personas que no terminaron la básica fue mayor al 24%, una cifra importante a considerar. También podemos observar que las regiones de Arica y Parinacota (XV), Tarapacá (I), Antofagasta (II), Metropolitana (XIII) y Magallanes (XII) con menor porcentaje de personas que no han terminado la básica.
-
-De @fig-13 se visualiza que la región Libertador General Bernardo O'Higgins (VI) con el mayor porcentaje de personas que solo tienen terminada la enseñanza básica, mientras que las regiones de Arica y Parinacota (XV), Tarapacá (I), antofagasta(II), Metropolitana (XIII) y Magallanes (XII) como las regiones con menor porcentaje de personas que llegaron a completar la enseñanza básica.
-
-De @fig-14 se observa que La región de Tarapacá (II) y Metropolitana (XIII) tienen mayor porcentaje de personas que no llegaron a completar la enseñanza media en un colegio/instituto humanista, mientras que las regiones de Magallanes (XII) y Libertador General Bernardo O'Higgins (VI) las regiones con menor porcentaje de personas que no completaron la enseñanza media en un colegio/instituto humanista.
-
-De @fig-15 se logra apreciar que la región de Tarapacá (II), La Araucanía (IX)  y Magallanes (XII) presentan mayor porcentaje de personas que no llegaron a completar la enseñanza media en un instituto Técnico Profesional. Mientras que las regiones de Aysén (XI), Ñuble(XVI) y Valparaíso (V) el menor porcentaje de personas que no llegaron a completar la enseñanza media en un instituto profesional.
-
-De @fig-16 logramos observar que la región de Antofagasta (II) es la que presenta major porcentaje de personas que completaron la enseñanza media en colegios/institutos humanistas, mienytas que las regiones de la zona sur y un poco del centro (Magallanes, Aysén, Los Lagos, La araucanía, Los Rios, Maule, Biobio, Ñuble) tienen un menor porcentaje de personas que completaron la enseñanza media en colegios humanistas.
-
-Tenemos que @fig-17 se ve que las regiones de Tarapacá (II) y Magallanes (XII) presentan mayor porcentaje de personas que completaron la enseñanza media en institutos Técnicos Profesionales. Mientras que la región de Aysén (XI) es la que presenta menor porcentaje de personas que terminaron la enseñanza media en institutos Técnicos Profesionales.
-
-Observando @fig-18 obtenemos que las regiones de Antofagasta (II), Valparaiso (V), Metropolitana (XIII) y Magallanes (XII) con mayor porcentaje de personas que tienen educación Técnica incompleta. Cabe notar que este porcentaje es uno de los más bajos (no supera el 3,5%). Mientras que las regiones de Los Rios (XIV) y La araucanía (IX) presentan el menor porcentaje de personas con educación Técnica incompleta.
-
-Analizando @fig-19 presenta mayor porcentaje de personas con educación Técnica completa la región de Magallanes (XII). mientras que múltiples regiones de la zona centro y sur (Tarapacá, Coquimbo, Maule, La Araucanía, Los Rios y Los Lagos) tienen menor porcentaje de personas que completaron la educación Técnica.
-
-Revisando @fig-20 se logra ver que las regiones de Antofagasta (II), Valparaiso (V), Metropolotana (XIII) y Ñuble (XVI) presentan mayor porcentaje de personas que tienen estudios profesionales incompletos. Por contraparte, las regiones de Coquimbo (IV) y Aysén (XI) presentan el menor porcentaje de personas con estudios profesionales incompletos.
-
-Observando @fig-21 podemos denotar que la región Metropolitana (XIII) es la única región con mayor porcentaje de personas con postgrados incompletos. Mientras que las demás regiones sus porcentajes son menores al 0.3%. Es interesante, igualmente, ver que este porcentaje no es mayor al 0.5% todos y que el más alto está en la región metropolitana.
-
-De @fig-22 podemos ver que el mayor porcentaje de personas que completaron estudios profesionales se encuentran concentrada en la región Metropolitana (XIII), seguida de la región de Magallanes (XII) con no más de 10%. Todas las demás regiones tienen un porcentaje menor a 8%.
-
-Finalmente un caso muy interesante de analizar, en @fig-23, observaremos el porcentaje de personas que terminaron un postgrado. De esta figura vemos una concentración extrema en la región Metropolitana (XIII), donde hay más de un 2% de personas que completaron un postgrado. Todas las demás regiones tienen menos de un 0.5% de personas con un postgrado completo. De esta información, al igual que los ingresos totales, analizaremos que sucede en la región Metropolitana según comunas.
+## Análisis educacional por Región:
 
 ```{r, include = TRUE, message = FALSE, warning = FALSE, echo = FALSE, results = FALSE}
 datos5 <- datos1 %>% 
@@ -453,10 +410,12 @@ p.region <- left_join(p.region, personas, by = "region") %>%
   dplyr::select(region, educ, prop)
 ```
 
-```{r, message = FALSE, results = FALSE, warning = FALSE, echo = FALSE}
-#| label: fig-11
-#| fig-cap: "Porcentaje de personas sin educación por región"
+De @fig-5 podemos observar que las regiones de Aysén (XI) y Tarapacá (I) presentan mayor porcentajes de personas que no completaron ningún nivel de educación. Luego la región de Magallanes (XII) es la menor porcentaje de personas que no completaron ningún nivel educacional.
 
+```{r, message = FALSE, results = FALSE, warning = FALSE, echo = FALSE}
+#| label: fig-5
+#| fig-cap: "Porcentaje de personas sin educación por región"
+#| layout: [[-20,60,-20]]
 
 left_join(chile, p.region[which(p.region$educ==0),]) %>% 
   mutate(centroid = map(geometry, st_centroid), 
@@ -479,9 +438,19 @@ left_join(chile, p.region[which(p.region$educ==0),]) %>%
   scale_fill_gradient(low = "blue", high = "darkorange", na.value = NA)
 ```
 
+De @fig-6-1 se visualiza que las regiones de Maule (VIII), La Araucanía (IX) y de Los Lagos (X) presentan mayor porcentaje de personas que no han terminado la enseñanza básica. Es importante destacar que los porcentajes de personas que no terminaron la básica fue mayor al 24%, una cifra importante a considerar. También podemos observar que las regiones de Arica y Parinacota (XV), Tarapacá (I), Antofagasta (II), Metropolitana (XIII) y Magallanes (XII) con menor porcentaje de personas que no han terminado la básica.
+
+De @fig-6-2 se visualiza que la región Libertador General Bernardo O'Higgins (VI) con el mayor porcentaje de personas que solo tienen terminada la enseñanza básica, mientras que las regiones de Arica y Parinacota (XV), Tarapacá (I), antofagasta(II), Metropolitana (XIII) y Magallanes (XII) como las regiones con menor porcentaje de personas que llegaron a completar la enseñanza básica.
+
 ```{r, message = FALSE, results = FALSE, warning = FALSE, echo = FALSE}
-#| label: fig-12
-#| fig-cap: "Porcentaje de personas con basica incompleta por región"
+#| label: fig-6
+#| fig-cap: "Porcentaje de personas con educación básica"
+#| fig-subcap: 
+#|         - "Incompleta"
+#|         - "Completa"
+#| layout: [[1,1]]
+
+
 left_join(chile, p.region[which(p.region$educ==1),]) %>% 
   mutate(centroid = map(geometry, st_centroid), 
          coords = map(centroid, st_coordinates), 
@@ -501,11 +470,7 @@ left_join(chile, p.region[which(p.region$educ==1),]) %>%
         axis.text.y = element_blank(),
         axis.ticks.y = element_blank()) +
   scale_fill_gradient(low = "blue", high = "darkorange", na.value = NA)
-```
 
-```{r, message = FALSE, results = FALSE, warning = FALSE, echo = FALSE}
-#| label: fig-13
-#| fig-cap: "Porcentaje de personas con basica completa por región"
 left_join(chile, p.region[which(p.region$educ==2),]) %>% 
   mutate(centroid = map(geometry, st_centroid), 
          coords = map(centroid, st_coordinates), 
@@ -527,9 +492,19 @@ left_join(chile, p.region[which(p.region$educ==2),]) %>%
   scale_fill_gradient(high = "blue", low = "darkorange", na.value = NA)
 ```
 
+\newpage
+
+De @fig-7-1 se observa que La región de Tarapacá (II) y Metropolitana (XIII) tienen mayor porcentaje de personas que no llegaron a completar la enseñanza media en un colegio/instituto humanista, mientras que las regiones de Magallanes (XII) y Libertador General Bernardo O'Higgins (VI) las regiones con menor porcentaje de personas que no completaron la enseñanza media en un colegio/instituto humanista.
+
+De @fig-7-2 se logra apreciar que la región de Tarapacá (II), La Araucanía (IX)  y Magallanes (XII) presentan mayor porcentaje de personas que no llegaron a completar la enseñanza media en un instituto Técnico Profesional. Mientras que las regiones de Aysén (XI), Ñuble(XVI) y Valparaíso (V) el menor porcentaje de personas que no llegaron a completar la enseñanza media en un instituto profesional.
+
 ```{r, message = FALSE, results = FALSE, warning = FALSE, echo = FALSE}
-#| label: fig-14
-#| fig-cap: "Porcentaje de personas con M. humanista incompleta por región"
+#| label: fig-7
+#| fig-cap: "Porcentaje de personas con educación media incompleta por región"
+#| fig-subcap:
+#|         - "Humanista"
+#|         - "Técnico Profesional"
+#| layout: [[1,1]]
 left_join(chile, p.region[which(p.region$educ==3),]) %>% 
   mutate(centroid = map(geometry, st_centroid), 
          coords = map(centroid, st_coordinates), 
@@ -549,11 +524,7 @@ left_join(chile, p.region[which(p.region$educ==3),]) %>%
         axis.text.y = element_blank(),
         axis.ticks.y = element_blank()) +
   scale_fill_gradient(low = "blue", high = "darkorange", na.value = NA)
-```
 
-```{r, message = FALSE, results = FALSE, warning = FALSE, echo = FALSE}
-#| label: fig-15
-#| fig-cap: "Porcentaje de personas con M. TP incompleta por región"
 left_join(chile, p.region[which(p.region$educ==4),]) %>% 
   mutate(centroid = map(geometry, st_centroid), 
          coords = map(centroid, st_coordinates), 
@@ -575,9 +546,17 @@ left_join(chile, p.region[which(p.region$educ==4),]) %>%
   scale_fill_gradient(low = "blue", high = "darkorange", na.value = NA)
 ```
 
+De @fig-8-1 logramos observar que la región de Antofagasta (II) es la que presenta major porcentaje de personas que completaron la enseñanza media en colegios/institutos humanistas, mienytas que las regiones de la zona sur y un poco del centro (Magallanes, Aysén, Los Lagos, La araucanía, Los Rios, Maule, Biobio, Ñuble) tienen un menor porcentaje de personas que completaron la enseñanza media en colegios humanistas.
+
+Tenemos que @fig-8-2 se ve que las regiones de Tarapacá (II) y Magallanes (XII) presentan mayor porcentaje de personas que completaron la enseñanza media en institutos Técnicos Profesionales. Mientras que la región de Aysén (XI) es la que presenta menor porcentaje de personas que terminaron la enseñanza media en institutos Técnicos Profesionales.
+
 ```{r, message = FALSE, results = FALSE, warning = FALSE, echo = FALSE}
-#| label: fig-16
-#| fig-cap: "Porcentaje de personas con M. humanista completa por región"
+#| label: fig-8
+#| fig-cap: "Porcentaje de personas con educación media completa por región"
+#| fig-subcap:
+#|         - "Humanista"
+#|         - "Técnico Profesional"
+#| layout: [[1,1]]
 left_join(chile, p.region[which(p.region$educ==5),]) %>% 
   mutate(centroid = map(geometry, st_centroid), 
          coords = map(centroid, st_coordinates), 
@@ -597,11 +576,7 @@ left_join(chile, p.region[which(p.region$educ==5),]) %>%
         axis.text.y = element_blank(),
         axis.ticks.y = element_blank()) +
   scale_fill_gradient(high = "blue", low = "darkorange", na.value = NA)
-```
 
-```{r, message = FALSE, results = FALSE, warning = FALSE, echo = FALSE}
-#| label: fig-17
-#| fig-cap: "Porcentaje de personas con M. TP completa por región"
 left_join(chile, p.region[which(p.region$educ==6),]) %>% 
   mutate(centroid = map(geometry, st_centroid), 
          coords = map(centroid, st_coordinates), 
@@ -623,9 +598,17 @@ left_join(chile, p.region[which(p.region$educ==6),]) %>%
   scale_fill_gradient(high = "blue", low = "darkorange", na.value = NA)
 ```
 
+Observando @fig-9-1 obtenemos que las regiones de Antofagasta (II), Valparaiso (V), Metropolitana (XIII) y Magallanes (XII) con mayor porcentaje de personas que tienen educación Técnica incompleta. Cabe notar que este porcentaje es uno de los más bajos (no supera el 3,5%). Mientras que las regiones de Los Rios (XIV) y La araucanía (IX) presentan el menor porcentaje de personas con educación Técnica incompleta.
+
+Analizando @fig-9-2 presenta mayor porcentaje de personas con educación Técnica completa la región de Magallanes (XII). mientras que múltiples regiones de la zona centro y sur (Tarapacá, Coquimbo, Maule, La Araucanía, Los Rios y Los Lagos) tienen menor porcentaje de personas que completaron la educación Técnica.
+
 ```{r, message = FALSE, results = FALSE, warning = FALSE, echo = FALSE}
-#| label: fig-18
-#| fig-cap: "Porcentaje de personas con Técnico incompleto por región"
+#| label: fig-9
+#| fig-cap: "Porcentaje de personas con educación técnica por región"
+#| fig-subcap:
+#|         - "Incompleta"
+#|         - "Completa"
+#| layout: [[1,1]]
 left_join(chile, p.region[which(p.region$educ==7),]) %>% 
   mutate(centroid = map(geometry, st_centroid), 
          coords = map(centroid, st_coordinates), 
@@ -645,11 +628,7 @@ left_join(chile, p.region[which(p.region$educ==7),]) %>%
         axis.text.y = element_blank(),
         axis.ticks.y = element_blank()) +
   scale_fill_gradient(low = "blue", high = "darkorange", na.value = NA)
-```
 
-```{r, message = FALSE, results = FALSE, warning = FALSE, echo = FALSE}
-#| label: fig-19
-#| fig-cap: "Porcentaje de personas con Técnico completo por región"
 left_join(chile, p.region[which(p.region$educ==8),]) %>% 
   mutate(centroid = map(geometry, st_centroid), 
          coords = map(centroid, st_coordinates), 
@@ -671,9 +650,17 @@ left_join(chile, p.region[which(p.region$educ==8),]) %>%
   scale_fill_gradient(high = "blue", low = "darkorange", na.value = NA)
 ```
 
+Revisando @fig-10-1 se logra ver que las regiones de Antofagasta (II), Valparaiso (V), Metropolotana (XIII) y Ñuble (XVI) presentan mayor porcentaje de personas que tienen estudios profesionales incompletos. Por contraparte, las regiones de Coquimbo (IV) y Aysén (XI) presentan el menor porcentaje de personas con estudios profesionales incompletos.
+
+Observando @fig-10-2 podemos denotar que la región Metropolitana (XIII) es la única región con mayor porcentaje de personas con postgrados incompletos. Mientras que las demás regiones sus porcentajes son menores al 0.3%. Es interesante, igualmente, ver que este porcentaje no es mayor al 0.5% todos y que el más alto está en la región metropolitana.
+
 ```{r, message = FALSE, results = FALSE, warning = FALSE, echo = FALSE}
-#| label: fig-20
-#| fig-cap: "Porcentaje de personas con Profesional incompleto  por región"
+#| label: fig-10
+#| fig-cap: "Porcentaje de personas con educación profesional por región"
+#| fig-subcap:
+#|         - "Incompleta"
+#|         - "Completa"
+#| layout: [[1,1]]
 left_join(chile, p.region[which(p.region$educ==9),]) %>% 
   mutate(centroid = map(geometry, st_centroid), 
          coords = map(centroid, st_coordinates), 
@@ -693,11 +680,7 @@ left_join(chile, p.region[which(p.region$educ==9),]) %>%
         axis.text.y = element_blank(),
         axis.ticks.y = element_blank()) +
   scale_fill_gradient(low = "blue", high = "darkorange", na.value = NA)
-```
 
-```{r, message = FALSE, results = FALSE, warning = FALSE, echo = FALSE}
-#| label: fig-21
-#| fig-cap: "Porcentaje de personas con Postgrado incompleto  por región"
 left_join(chile, p.region[which(p.region$educ==10),]) %>% 
   mutate(centroid = map(geometry, st_centroid), 
          coords = map(centroid, st_coordinates), 
@@ -719,9 +702,17 @@ left_join(chile, p.region[which(p.region$educ==10),]) %>%
   scale_fill_gradient(low = "blue", high = "darkorange", na.value = NA)
 ```
 
+De @fig-11-1 podemos ver que el mayor porcentaje de personas que completaron estudios profesionales se encuentran concentrada en la región Metropolitana (XIII), seguida de la región de Magallanes (XII) con no más de 10%. Todas las demás regiones tienen un porcentaje menor a 8%.
+
+Finalmente un caso muy interesante de analizar, en @fig-11-2, observaremos el porcentaje de personas que terminaron un postgrado. De esta figura vemos una concentración extrema en la región Metropolitana (XIII), donde hay más de un 2% de personas que completaron un postgrado. Todas las demás regiones tienen menos de un 0.5% de personas con un postgrado completo. De esta información, al igual que los ingresos totales, analizaremos que sucede en la región Metropolitana según comunas.
+
 ```{r, message = FALSE, results = FALSE, warning = FALSE, echo = FALSE}
-#| label: fig-22
-#| fig-cap: "Porcentaje de personas con Profesional completo por región"
+#| label: fig-11
+#| fig-cap: "Porcentaje de personas con profesional completo por región"
+#| fig-subcap:
+#|         - "Incompleta"
+#|         - "Completa"
+#| layout: [[1,1]]
 left_join(chile, p.region[which(p.region$educ==11),]) %>% 
   mutate(centroid = map(geometry, st_centroid), 
          coords = map(centroid, st_coordinates), 
@@ -741,11 +732,7 @@ left_join(chile, p.region[which(p.region$educ==11),]) %>%
         axis.text.y = element_blank(),
         axis.ticks.y = element_blank()) +
   scale_fill_gradient(high = "blue", low = "darkorange", na.value = NA)
-```
 
-```{r, message = FALSE, results = FALSE, warning = FALSE, echo = FALSE}
-#| label: fig-23
-#| fig-cap: "Porcentaje de personas con Postgrado completo por región"
 left_join(chile, p.region[which(p.region$educ==12),]) %>% 
   mutate(centroid = map(geometry, st_centroid), 
          coords = map(centroid, st_coordinates), 
@@ -769,12 +756,12 @@ left_join(chile, p.region[which(p.region$educ==12),]) %>%
 
 \newpage
 
-Analizando el caso particular de Santiago sobre las personas que tienen un postgrado completo obtendremos la @fig-24.
+Analizando el caso particular de Santiago sobre las personas que tienen un postgrado completo obtendremos la @fig-12
 
-De @fig-24 podemos observar que existen comunas que no tienen personas que completaron un postgrado, que la mayoría tiene menos de un 2,5% de personas con un postgrado, y más importante que existen 3 comunas donde hay cerca de un 10% de personas con un postgrado, y exactamente esas comunas son Vitacura, Providencia y Las condes, la cuales son las 3 comunas con el ingreso más alto según @fig-9 y @fig-10. Entonces podemos suponer que esta comuna presenta ingresos altos debido a las personas con postgrado completo. Esta idea se fortalece debido al conocimiento popular que las personas que estudian un postgrado tiene sueldo mucho mayor al de las demás personas.
+De @fig-12 podemos observar que existen comunas que no tienen personas que completaron un postgrado, que la mayoría tiene menos de un 2,5% de personas con un postgrado, y más importante que existen 3 comunas donde hay cerca de un 10% de personas con un postgrado, y exactamente esas comunas son Vitacura, Providencia y Las condes, la cuales son las 3 comunas con el ingreso más alto según @fig-2. Entonces podemos suponer que esta comuna presenta ingresos altos debido a las personas con postgrado completo. Esta idea se fortalece debido al conocimiento popular que las personas que estudian un postgrado tiene sueldo mucho mayor al de las demás personas.
 
 ```{r, include = TRUE, message = FALSE, warning = FALSE, echo = FALSE, results = FALSE}
-# analisis region metropolitana -------------------------------------------
+
 p.com <- datos5 %>% filter(region == 13) %>% count(comuna, educ) 
 
 personas <- datos3 %>% filter(region == 13) %>% count(comuna)
@@ -787,8 +774,9 @@ p.com = p.com %>% filter(educ == 12)
 ```
 
 ```{r, message = FALSE, results = FALSE, warning = FALSE, echo = FALSE}
-#| label: fig-24
+#| label: fig-12
 #| fig-cap: "Porcentaje de personas con Postgrado completo por comunas de Santiago"
+#| layout: [[-20,60,-20]]
 left_join(rm, p.com) %>% 
   ggplot() +
   geom_sf(aes(geometry = geometry, fill = prop)) + 
@@ -799,8 +787,6 @@ left_join(rm, p.com) %>%
   scale_fill_gradient(low = "darkorange", high = "blue", na.value = NA)
 ```
 
-\newpage
-
 Con todos los datos anteriores podemos ver semejanzas, de que existen una relación entre los ingresos, la pobreza, la demografía, los estudios, entre otros
 
 \newpage
@@ -809,7 +795,7 @@ Con todos los datos anteriores podemos ver semejanzas, de que existen una relaci
 
 En conclusión, el Emiliano vale pico, pero no tanto como Aravena.
 
-# Bibliografía (EDITAR DESPUÉS)
+# Bibliografía 
 
 1.  https://www.fundaciontrascender.cl/2018/12/18/que-es-pobreza-multidimensional/
 2.  Libro de códigos Base de Datos Casen 2017
