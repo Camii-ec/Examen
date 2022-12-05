@@ -406,7 +406,31 @@ left_join(rm, p.rm) %>%
 
 -   Análisis educacional por Región:
 
-De @fig-11 podemos observar que la región de Aysén (XI) y Tarapacá (I) presentan mayor porcentajes
+De @fig-11 podemos observar que las regiones de Aysén (XI) y Tarapacá (I) presentan mayor porcentajes de personas que no completaron ningún nivel de educación. Luego la región de Magallanes (XII) es la menor porcentaje de personas que no completaron ningún nivel educacional.
+
+De @fig-12 se visualiza que las regiones de Maule (VIII), La Araucanía (IX) y de Los Lagos (X) presentan mayor porcentaje de personas que no han terminado la enseñanza básica. Es importante destacar que los porcentajes de personas que no terminaron la básica fue mayor al 24%, una cifra importante a considerar. También podemos observar que las regiones de Arica y Parinacota (XV), Tarapacá (I), Antofagasta (II), Metropolitana (XIII) y Magallanes (XII) con menor porcentaje de personas que no han terminado la básica.
+
+De @fig-13 se visualiza que la región Libertador General Bernardo O'Higgins (VI) con el mayor porcentaje de personas que solo tienen terminada la enseñanza básica, mientras que las regiones de Arica y Parinacota (XV), Tarapacá (I), antofagasta(II), Metropolitana (XIII) y Magallanes (XII) como las regiones con menor porcentaje de personas que llegaron a completar la enseñanza básica.
+
+De @fig-14 se observa que La región de Tarapacá (II) y Metropolitana (XIII) tienen mayor porcentaje de personas que no llegaron a completar la enseñanza media en un colegio/instituto humanista, mientras que las regiones de Magallanes (XII) y Libertador General Bernardo O'Higgins (VI) las regiones con menor porcentaje de personas que no completaron la enseñanza media en un colegio/instituto humanista.
+
+De @fig-15 se logra apreciar que la región de Tarapacá (II), La Araucanía (IX)  y Magallanes (XII) presentan mayor porcentaje de personas que no llegaron a completar la enseñanza media en un instituto Técnico Profesional. Mientras que las regiones de Aysén (XI), Ñuble(XVI) y Valparaíso (V) el menor porcentaje de personas que no llegaron a completar la enseñanza media en un instituto profesional.
+
+De @fig-16 logramos observar que la región de Antofagasta (II) es la que presenta major porcentaje de personas que completaron la enseñanza media en colegios/institutos humanistas, mienytas que las regiones de la zona sur y un poco del centro (Magallanes, Aysén, Los Lagos, La araucanía, Los Rios, Maule, Biobio, Ñuble) tienen un menor porcentaje de personas que completaron la enseñanza media en colegios humanistas.
+
+Tenemos que @fig-17 se ve que las regiones de Tarapacá (II) y Magallanes (XII) presentan mayor porcentaje de personas que completaron la enseñanza media en institutos Técnicos Profesionales. Mientras que la región de Aysén (XI) es la que presenta menor porcentaje de personas que terminaron la enseñanza media en institutos Técnicos Profesionales.
+
+Observando @fig-18 obtenemos que las regiones de Antofagasta (II), Valparaiso (V), Metropolitana (XIII) y Magallanes (XII) con mayor porcentaje de personas que tienen educación Técnica incompleta. Cabe notar que este porcentaje es uno de los más bajos (no supera el 3,5%). Mientras que las regiones de Los Rios (XIV) y La araucanía (IX) presentan el menor porcentaje de personas con educación Técnica incompleta.
+
+Analizando @fig-19 presenta mayor porcentaje de personas con educación Técnica completa la región de Magallanes (XII). mientras que múltiples regiones de la zona centro y sur (Tarapacá, Coquimbo, Maule, La Araucanía, Los Rios y Los Lagos) tienen menor porcentaje de personas que completaron la educación Técnica.
+
+Revisando @fig-20 se logra ver que las regiones de Antofagasta (II), Valparaiso (V), Metropolotana (XIII) y Ñuble (XVI) presentan mayor porcentaje de personas que tienen estudios profesionales incompletos. Por contraparte, las regiones de Coquimbo (IV) y Aysén (XI) presentan el menor porcentaje de personas con estudios profesionales incompletos.
+
+Observando @fig-21 podemos denotar que la región Metropolitana (XIII) es la única región con mayor porcentaje de personas con postgrados incompletos. Mientras que las demás regiones sus porcentajes son menores al 0.3%. Es interesante, igualmente, ver que este porcentaje no es mayor al 0.5% todos y que el más alto está en la región metropolitana.
+
+De @fig-22 podemos ver que el mayor porcentaje de personas que completaron estudios profesionales se encuentran concentrada en la región Metropolitana (XIII), seguida de la región de Magallanes (XII) con no más de 10%. Todas las demás regiones tienen un porcentaje menor a 8%.
+
+Finalmente un caso muy interesante de analizar, en @fig-23, observaremos el porcentaje de personas que terminaron un postgrado. De esta figura vemos una concentración extrema en la región Metropolitana (XIII), donde hay más de un 2% de personas que completaron un postgrado. Todas las demás regiones tienen menos de un 0.5% de personas con un postgrado completo. De esta información, al igual que los ingresos totales, analizaremos que sucede en la región Metropolitana según comunas.
 
 ```{r, include = TRUE, message = FALSE, warning = FALSE, echo = FALSE, results = FALSE}
 datos5 <- datos1 %>% 
@@ -743,7 +767,41 @@ left_join(chile, p.region[which(p.region$educ==12),]) %>%
   scale_fill_gradient(high = "blue", low = "darkorange", na.value = NA)
 ```
 
+\newpage
 
+Analizando el caso particular de Santiago sobre las personas que tienen un postgrado completo obtendremos la @fig-24.
+
+De @fig-24 podemos observar que existen comunas que no tienen personas que completaron un postgrado, que la mayoría tiene menos de un 2,5% de personas con un postgrado, y más importante que existen 3 comunas donde hay cerca de un 10% de personas con un postgrado, y exactamente esas comunas son Vitacura, Providencia y Las condes, la cuales son las 3 comunas con el ingreso más alto según @fig-9 y @fig-10. Entonces podemos suponer que esta comuna presenta ingresos altos debido a las personas con postgrado completo. Esta idea se fortalece debido al conocimiento popular que las personas que estudian un postgrado tiene sueldo mucho mayor al de las demás personas.
+
+```{r, include = TRUE, message = FALSE, warning = FALSE, echo = FALSE, results = FALSE}
+# analisis region metropolitana -------------------------------------------
+p.com <- datos5 %>% filter(region == 13) %>% count(comuna, educ) 
+
+personas <- datos3 %>% filter(region == 13) %>% count(comuna)
+
+p.com <- left_join(p.com, personas, by = "comuna") %>% 
+  mutate(prop = n.x/n.y*100) %>% 
+  dplyr::select(comuna, educ, prop)
+
+p.com = p.com %>% filter(educ == 12)
+```
+
+```{r, message = FALSE, results = FALSE, warning = FALSE, echo = FALSE}
+#| label: fig-24
+#| fig-cap: "Porcentaje de personas con Postgrado completo por comunas de Santiago"
+left_join(rm, p.com) %>% 
+  ggplot() +
+  geom_sf(aes(geometry = geometry, fill = prop)) + 
+  theme(axis.text.x = element_blank(), # Eliminar ejes
+        axis.ticks.x = element_blank(),
+        axis.text.y = element_blank(),
+        axis.ticks.y = element_blank()) +
+  scale_fill_gradient(low = "darkorange", high = "blue", na.value = NA)
+```
+
+\newpage
+
+Con todos los datos anteriores podemos ver semejanzas, de que existen una relación entre los ingresos, la pobreza, la demografía, los estudios, entre otros
 
 \newpage
 
