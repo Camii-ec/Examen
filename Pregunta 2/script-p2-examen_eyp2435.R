@@ -288,10 +288,12 @@ left_join(rm, p.rm) %>%
 
 # Nivel educacional por región --------------------------------------------
 
-datos5 <- datos1[is.na(datos$educ)==FALSE,] %>% 
+datos5 <- datos1 %>% 
   mutate(region = as.character(region),
          comuna = as.character(comuna)) %>% 
   filter(educ != 99)
+
+datos5$educ[is.na(datos5$educ)] = 0
 
 datos5$region <- recode(datos5$region, "1" = "01", "2" = "02", "3" = "03", 
                         "4" = "04", "5" = "05", "6" = "06", "7" = "07", 
@@ -307,81 +309,272 @@ p.region <- left_join(p.region, personas, by = "region") %>%
 
 # Sin educación 
 left_join(chile, p.region[which(p.region$educ==0),]) %>% 
+  mutate(centroid = map(geometry, st_centroid), 
+         coords = map(centroid, st_coordinates), 
+         coords_x = map_dbl(coords, 1), 
+         coords_y = map_dbl(coords, 2)) %>%
   ggplot() +
   geom_sf(aes(geometry = geometry, fill = prop)) + 
-  coord_sf(xlim = c(-77, -65))
+  coord_sf(xlim = c(-77, -65)) +
+  geom_text_repel(mapping = aes(coords_x, 
+                                coords_y, 
+                                label = region),
+                  max.overlaps = 49) +
+  theme(axis.text.x = element_blank(), # Eliminar ejes
+        axis.ticks.x = element_blank(),
+        axis.text.y = element_blank(),
+        axis.ticks.y = element_blank()) +
+  scale_fill_gradient(low = "blue", high = "darkorange", na.value = NA)
 
 # Básica incompleta
 left_join(chile, p.region[which(p.region$educ==1),]) %>% 
+  mutate(centroid = map(geometry, st_centroid), 
+         coords = map(centroid, st_coordinates), 
+         coords_x = map_dbl(coords, 1), 
+         coords_y = map_dbl(coords, 2)) %>%
   ggplot() +
   geom_sf(aes(geometry = geometry, fill = prop)) + 
-  coord_sf(xlim = c(-77, -65))
+  coord_sf(xlim = c(-77, -65)) +
+  geom_text_repel(mapping = aes(coords_x, 
+                                coords_y, 
+                                label = region),
+                  max.overlaps = 49) +
+  theme(axis.text.x = element_blank(), # Eliminar ejes
+        axis.ticks.x = element_blank(),
+        axis.text.y = element_blank(),
+        axis.ticks.y = element_blank()) +
+  scale_fill_gradient(low = "blue", high = "darkorange", na.value = NA)
 
 # Básica completa
 left_join(chile, p.region[which(p.region$educ==2),]) %>% 
+  mutate(centroid = map(geometry, st_centroid), 
+         coords = map(centroid, st_coordinates), 
+         coords_x = map_dbl(coords, 1), 
+         coords_y = map_dbl(coords, 2)) %>%
   ggplot() +
   geom_sf(aes(geometry = geometry, fill = prop)) + 
-  coord_sf(xlim = c(-77, -65))
+  coord_sf(xlim = c(-77, -65)) +
+  geom_text_repel(mapping = aes(coords_x, 
+                                coords_y, 
+                                label = region),
+                  max.overlaps = 49) +
+  theme(axis.text.x = element_blank(), # Eliminar ejes
+        axis.ticks.x = element_blank(),
+        axis.text.y = element_blank(),
+        axis.ticks.y = element_blank()) +
+  scale_fill_gradient(high = "blue", low = "darkorange", na.value = NA)
 
 # M. humanista incompleta
 left_join(chile, p.region[which(p.region$educ==3),]) %>% 
+  mutate(centroid = map(geometry, st_centroid), 
+         coords = map(centroid, st_coordinates), 
+         coords_x = map_dbl(coords, 1), 
+         coords_y = map_dbl(coords, 2)) %>%
   ggplot() +
   geom_sf(aes(geometry = geometry, fill = prop)) + 
-  coord_sf(xlim = c(-77, -65))
+  coord_sf(xlim = c(-77, -65)) +
+  geom_text_repel(mapping = aes(coords_x, 
+                                coords_y, 
+                                label = region),
+                  max.overlaps = 49) +
+  theme(axis.text.x = element_blank(), # Eliminar ejes
+        axis.ticks.x = element_blank(),
+        axis.text.y = element_blank(),
+        axis.ticks.y = element_blank()) +
+  scale_fill_gradient(low = "blue", high = "darkorange", na.value = NA)
 
 # M. TP incompleta
 left_join(chile, p.region[which(p.region$educ==4),]) %>% 
+  mutate(centroid = map(geometry, st_centroid), 
+         coords = map(centroid, st_coordinates), 
+         coords_x = map_dbl(coords, 1), 
+         coords_y = map_dbl(coords, 2)) %>%
   ggplot() +
   geom_sf(aes(geometry = geometry, fill = prop)) + 
-  coord_sf(xlim = c(-77, -65))
+  coord_sf(xlim = c(-77, -65)) +
+  geom_text_repel(mapping = aes(coords_x, 
+                                coords_y, 
+                                label = region),
+                  max.overlaps = 49) +
+  theme(axis.text.x = element_blank(), # Eliminar ejes
+        axis.ticks.x = element_blank(),
+        axis.text.y = element_blank(),
+        axis.ticks.y = element_blank()) +
+  scale_fill_gradient(low = "blue", high = "darkorange", na.value = NA)
 
 # M. humanista completa
 left_join(chile, p.region[which(p.region$educ==5),]) %>% 
+  mutate(centroid = map(geometry, st_centroid), 
+         coords = map(centroid, st_coordinates), 
+         coords_x = map_dbl(coords, 1), 
+         coords_y = map_dbl(coords, 2)) %>%
   ggplot() +
   geom_sf(aes(geometry = geometry, fill = prop)) + 
-  coord_sf(xlim = c(-77, -65))
+  coord_sf(xlim = c(-77, -65)) +
+  geom_text_repel(mapping = aes(coords_x, 
+                                coords_y, 
+                                label = region),
+                  max.overlaps = 49) +
+  theme(axis.text.x = element_blank(), # Eliminar ejes
+        axis.ticks.x = element_blank(),
+        axis.text.y = element_blank(),
+        axis.ticks.y = element_blank()) +
+  scale_fill_gradient(high = "blue", low = "darkorange", na.value = NA)
 
 # M. TP completa
 left_join(chile, p.region[which(p.region$educ==6),]) %>% 
+  mutate(centroid = map(geometry, st_centroid), 
+         coords = map(centroid, st_coordinates), 
+         coords_x = map_dbl(coords, 1), 
+         coords_y = map_dbl(coords, 2)) %>%
   ggplot() +
   geom_sf(aes(geometry = geometry, fill = prop)) + 
-  coord_sf(xlim = c(-77, -65))
+  coord_sf(xlim = c(-77, -65)) +
+  geom_text_repel(mapping = aes(coords_x, 
+                                coords_y, 
+                                label = region),
+                  max.overlaps = 49) +
+  theme(axis.text.x = element_blank(), # Eliminar ejes
+        axis.ticks.x = element_blank(),
+        axis.text.y = element_blank(),
+        axis.ticks.y = element_blank()) +
+  scale_fill_gradient(high = "blue", low = "darkorange", na.value = NA)
 
 # Técnico incompleto
 left_join(chile, p.region[which(p.region$educ==7),]) %>% 
+  mutate(centroid = map(geometry, st_centroid), 
+         coords = map(centroid, st_coordinates), 
+         coords_x = map_dbl(coords, 1), 
+         coords_y = map_dbl(coords, 2)) %>%
   ggplot() +
   geom_sf(aes(geometry = geometry, fill = prop)) + 
-  coord_sf(xlim = c(-77, -65))
+  coord_sf(xlim = c(-77, -65)) +
+  geom_text_repel(mapping = aes(coords_x, 
+                                coords_y, 
+                                label = region),
+                  max.overlaps = 49) +
+  theme(axis.text.x = element_blank(), # Eliminar ejes
+        axis.ticks.x = element_blank(),
+        axis.text.y = element_blank(),
+        axis.ticks.y = element_blank()) +
+  scale_fill_gradient(low = "blue", high = "darkorange", na.value = NA)
 
 # Técnico completo
 left_join(chile, p.region[which(p.region$educ==8),]) %>% 
+  mutate(centroid = map(geometry, st_centroid), 
+         coords = map(centroid, st_coordinates), 
+         coords_x = map_dbl(coords, 1), 
+         coords_y = map_dbl(coords, 2)) %>%
   ggplot() +
   geom_sf(aes(geometry = geometry, fill = prop)) + 
-  coord_sf(xlim = c(-77, -65))
+  coord_sf(xlim = c(-77, -65)) +
+  geom_text_repel(mapping = aes(coords_x, 
+                                coords_y, 
+                                label = region),
+                  max.overlaps = 49) +
+  theme(axis.text.x = element_blank(), # Eliminar ejes
+        axis.ticks.x = element_blank(),
+        axis.text.y = element_blank(),
+        axis.ticks.y = element_blank()) +
+  scale_fill_gradient(high = "blue", low = "darkorange", na.value = NA)
 
 # Profesional incompleto 
 left_join(chile, p.region[which(p.region$educ==9),]) %>% 
+  mutate(centroid = map(geometry, st_centroid), 
+         coords = map(centroid, st_coordinates), 
+         coords_x = map_dbl(coords, 1), 
+         coords_y = map_dbl(coords, 2)) %>%
   ggplot() +
   geom_sf(aes(geometry = geometry, fill = prop)) + 
-  coord_sf(xlim = c(-77, -65))
+  coord_sf(xlim = c(-77, -65)) +
+  geom_text_repel(mapping = aes(coords_x, 
+                                coords_y, 
+                                label = region),
+                  max.overlaps = 49) +
+  theme(axis.text.x = element_blank(), # Eliminar ejes
+        axis.ticks.x = element_blank(),
+        axis.text.y = element_blank(),
+        axis.ticks.y = element_blank()) +
+  scale_fill_gradient(low = "blue", high = "darkorange", na.value = NA)
 
 # Postgrado incompleto
 left_join(chile, p.region[which(p.region$educ==10),]) %>% 
+  mutate(centroid = map(geometry, st_centroid), 
+         coords = map(centroid, st_coordinates), 
+         coords_x = map_dbl(coords, 1), 
+         coords_y = map_dbl(coords, 2)) %>%
   ggplot() +
   geom_sf(aes(geometry = geometry, fill = prop)) + 
-  coord_sf(xlim = c(-77, -65))
+  coord_sf(xlim = c(-77, -65)) +
+  geom_text_repel(mapping = aes(coords_x, 
+                                coords_y, 
+                                label = region),
+                  max.overlaps = 49) +
+  theme(axis.text.x = element_blank(), # Eliminar ejes
+        axis.ticks.x = element_blank(),
+        axis.text.y = element_blank(),
+        axis.ticks.y = element_blank()) +
+  scale_fill_gradient(low = "blue", high = "darkorange", na.value = NA)
 
 # Profesional completo
 left_join(chile, p.region[which(p.region$educ==11),]) %>% 
+  mutate(centroid = map(geometry, st_centroid), 
+         coords = map(centroid, st_coordinates), 
+         coords_x = map_dbl(coords, 1), 
+         coords_y = map_dbl(coords, 2)) %>%
   ggplot() +
   geom_sf(aes(geometry = geometry, fill = prop)) + 
-  coord_sf(xlim = c(-77, -65))
+  coord_sf(xlim = c(-77, -65)) +
+  geom_text_repel(mapping = aes(coords_x, 
+                                coords_y, 
+                                label = region),
+                  max.overlaps = 49) +
+  theme(axis.text.x = element_blank(), # Eliminar ejes
+        axis.ticks.x = element_blank(),
+        axis.text.y = element_blank(),
+        axis.ticks.y = element_blank()) +
+  scale_fill_gradient(high = "blue", low = "darkorange", na.value = NA)
 
 # Postgrado completo 
 left_join(chile, p.region[which(p.region$educ==12),]) %>% 
+  mutate(centroid = map(geometry, st_centroid), 
+         coords = map(centroid, st_coordinates), 
+         coords_x = map_dbl(coords, 1), 
+         coords_y = map_dbl(coords, 2)) %>%
   ggplot() +
   geom_sf(aes(geometry = geometry, fill = prop)) + 
-  coord_sf(xlim = c(-77, -65))
+  coord_sf(xlim = c(-77, -65)) +
+  geom_text_repel(mapping = aes(coords_x, 
+                                coords_y, 
+                                label = region),
+                  max.overlaps = 49) +
+  theme(axis.text.x = element_blank(), # Eliminar ejes
+        axis.ticks.x = element_blank(),
+        axis.text.y = element_blank(),
+        axis.ticks.y = element_blank()) +
+  scale_fill_gradient(high = "blue", low = "darkorange", na.value = NA)
+
+
+# analisis region metropolitana -------------------------------------------
+p.com <- datos5 %>% filter(region == 13) %>% count(comuna, educ) 
+
+personas <- datos3 %>% filter(region == 13) %>% count(comuna)
+
+p.com <- left_join(p.com, personas, by = "comuna") %>% 
+  mutate(prop = n.x/n.y*100) %>% 
+  dplyr::select(comuna, educ, prop)
+
+p.com = p.com %>% filter(educ == 12)
+
+left_join(rm, p.com) %>% 
+  ggplot() +
+  geom_sf(aes(geometry = geometry, fill = prop)) + 
+  theme(axis.text.x = element_blank(), # Eliminar ejes
+        axis.ticks.x = element_blank(),
+        axis.text.y = element_blank(),
+        axis.ticks.y = element_blank()) +
+  scale_fill_gradient(low = "darkorange", high = "blue", na.value = NA)
+
 
 # Intento número 1000 -----------------------------------------------------
 
