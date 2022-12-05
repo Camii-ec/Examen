@@ -780,6 +780,7 @@ p.com = p.com %>% filter(educ == 12)
 left_join(rm, p.com) %>% 
   ggplot() +
   geom_sf(aes(geometry = geometry, fill = prop)) + 
+  theme_bw() +
   theme(axis.text.x = element_blank(), # Eliminar ejes
         axis.ticks.x = element_blank(),
         axis.text.y = element_blank(),
