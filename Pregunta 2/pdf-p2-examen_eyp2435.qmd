@@ -1,5 +1,5 @@
 ---
-title: "(la weá que sea que vayamos a hacer con la base culiá)"
+title: "Sebastín ta pitiado"
 subtitle: "EYP2435 - Análisis Multivariado"
 format: 
   pdf: 
@@ -100,7 +100,7 @@ p.region <- left_join(p.region, personas, by = "region") %>%
   dplyr::select(region, pobreza, prop)
 ```
 
-Como se puede observar en *Figura 1* la mayor proporción de pobreza extrema es la región de la Araucanía (IX Región) seguida de la región de Ñuble (XVI Región). Además podemos observar que las regiones de Aysén (XI), Magallanes (XII), Metropolitana (XIII) y Antofagasta (II) poseen la menor proporción de pobres extremos.
+Como se puede observar en @fig-1 la mayor proporción de pobreza extrema es la región de la Araucanía (IX Región) seguida de la región de Ñuble (XVI Región). Además podemos observar que las regiones de Aysén (XI), Magallanes (XII), Metropolitana (XIII) y Antofagasta (II) poseen la menor proporción de pobres extremos.
 
 ```{r, message = FALSE, results = FALSE, warning = FALSE, echo = FALSE}
 #| label: fig-1
@@ -118,12 +118,14 @@ left_join(chile, p.region[which(p.region$pobreza == 1),]) %>%
                                 coords_y, 
                                 label = region),
                   col = "black", size = 3, max.overlaps = 22) +
+  labs(x = "", y = "") +
+  theme_bw() +
   theme(axis.text.x = element_blank(), # Eliminar ejes
         axis.ticks.x = element_blank(),
         axis.text.y = element_blank(),
         axis.ticks.y = element_blank()) +
-  scale_fill_gradient(low = "green", high = "brown", na.value = NA)+
-  theme_bw()
+  scale_fill_gradient(low = "green", high = "brown", na.value = NA)
+  
 ```
 
 ```{r, message = FALSE, results = FALSE, warning = FALSE, echo = FALSE}
@@ -142,13 +144,14 @@ left_join(chile, p.region[which(p.region$pobreza == 2),]) %>%
   geom_text_repel(mapping = aes(coords_x, 
                                 coords_y, 
                                 label = region),
-                  col = "black", size = 3, max.overlaps = 22) +
+                  col = "black", size = 3, max.overlaps = 22)  +
+  labs(x = "", y = "") +
+  theme_bw() +
   theme(axis.text.x = element_blank(), # Eliminar ejes
         axis.ticks.x = element_blank(),
         axis.text.y = element_blank(),
         axis.ticks.y = element_blank()) +
-  scale_fill_gradient(low = "green", high = "brown", na.value = NA)+
-  theme_bw()
+  scale_fill_gradient(low = "green", high = "brown", na.value = NA)
 ```
 
 ```{r, message = FALSE, results = FALSE, warning = FALSE, echo = FALSE}
@@ -166,13 +169,14 @@ left_join(chile, p.region[which(p.region$pobreza == 3),]) %>%
   geom_text_repel(mapping = aes(coords_x, 
                                 coords_y, 
                                 label = region),
-                  col = "black", size = 3, max.overlaps = 22) +
+                  col = "black", size = 3, max.overlaps = 22)  +
+  labs(x = "", y = "") +
+  theme_bw() +
   theme(axis.text.x = element_blank(), # Eliminar ejes
         axis.ticks.x = element_blank(),
         axis.text.y = element_blank(),
         axis.ticks.y = element_blank()) +
-  scale_fill_gradient(low = "brown", high = "green", na.value = NA)+
-  theme_bw()
+  scale_fill_gradient(low = "brown", high = "green", na.value = NA)
 ```
 
 \newpage
@@ -216,13 +220,14 @@ left_join(chile, p.region[which(p.region$activ==1),]) %>%
   geom_text_repel(mapping = aes(coords_x, 
                                 coords_y, 
                                 label = region),
-                  max.overlaps = 49) +
+                  max.overlaps = 49)  +
+  labs(x = "", y = "") +
+  theme_bw() +
   theme(axis.text.x = element_blank(), # Eliminar ejes
         axis.ticks.x = element_blank(),
         axis.text.y = element_blank(),
         axis.ticks.y = element_blank()) +
-  scale_fill_gradient(low = "green", high = "orange", na.value = NA)+
-  theme_bw()
+  scale_fill_gradient(low = "green", high = "orange", na.value = NA)
 ```
 
 ```{r, message = FALSE, results = FALSE, warning = FALSE, echo = FALSE}
@@ -241,13 +246,14 @@ left_join(chile, p.region[which(p.region$activ==2),]) %>%
   geom_text_repel(mapping = aes(coords_x, 
                                 coords_y, 
                                 label = region),
-                  max.overlaps = 49) +
+                  max.overlaps = 49)  +
+  labs(x = "", y = "") +
+  theme_bw() +
   theme(axis.text.x = element_blank(), # Eliminar ejes
         axis.ticks.x = element_blank(),
         axis.text.y = element_blank(),
         axis.ticks.y = element_blank()) +
-  scale_fill_gradient(low = "green", high = "orange", na.value = NA)+
-  theme_bw()
+  scale_fill_gradient(low = "green", high = "orange", na.value = NA)
 ```
 
 ```{r, message = FALSE, results = FALSE, warning = FALSE, echo = FALSE, out.width='80%', fig.align='center', fig.pos='htbp', fig.cap="\\label{fig:cap05gg02}Porcentaje de inactivos por regiones"}
@@ -265,13 +271,14 @@ left_join(chile, p.region[which(p.region$activ==3),]) %>%
   geom_text_repel(mapping = aes(coords_x, 
                                 coords_y, 
                                 label = region),
-                  max.overlaps = 49) +
+                  max.overlaps = 49)  +
+  labs(x = "", y = "") +
+  theme_bw() +
   theme(axis.text.x = element_blank(), # Eliminar ejes
         axis.ticks.x = element_blank(),
         axis.text.y = element_blank(),
         axis.ticks.y = element_blank()) +
-  scale_fill_gradient(low = "white", high = "red", na.value = NA)+
-  theme_bw()
+  scale_fill_gradient(low = "white", high = "red", na.value = NA)
 ```
 
 \newpage
@@ -310,13 +317,14 @@ left_join(chile, p.region) %>%
   geom_text_repel(mapping = aes(coords_x, 
                                 coords_y, 
                                 label = region),
-                  max.overlaps = 49) +
+                  max.overlaps = 49)  +
+  labs(x = "", y = "") +
+  theme_bw() +
   theme(axis.text.x = element_blank(), # Eliminar ejes
         axis.ticks.x = element_blank(),
         axis.text.y = element_blank(),
         axis.ticks.y = element_blank()) +
-  scale_fill_gradient(low = "white", high = "darkgreen", na.value = NA)+
-  theme_bw()
+  scale_fill_gradient(low = "white", high = "darkgreen", na.value = NA)
 ```
 
 ```{r, message = FALSE, results = FALSE, warning = FALSE, echo = FALSE}
@@ -335,12 +343,13 @@ left_join(chile, p.region) %>%
                                 coords_y, 
                                 label = region),
                   max.overlaps = 49) +
+  labs(x = "", y = "") +
+  theme_bw() +
   theme(axis.text.x = element_blank(), # Eliminar ejes
         axis.ticks.x = element_blank(),
         axis.text.y = element_blank(),
         axis.ticks.y = element_blank()) +
-  scale_fill_gradient(low = "white", high = "darkgreen", na.value = NA)+
-  theme_bw()
+  scale_fill_gradient(low = "white", high = "darkgreen", na.value = NA)
 ```
 
 \newpage
@@ -365,12 +374,13 @@ p.rm <- datos4rm %>% group_by(comuna) %>%
 left_join(rm, p.rm) %>% 
   ggplot() +
   geom_sf(aes(geometry = geometry, fill = media)) + 
+  labs(x = "", y = "") +
+  theme_bw() +
   theme(axis.text.x = element_blank(), # Eliminar ejes
         axis.ticks.x = element_blank(),
         axis.text.y = element_blank(),
         axis.ticks.y = element_blank()) +
-  scale_fill_gradient(low = "white", high = "darkgreen", na.value = NA)+
-  theme_bw()
+  scale_fill_gradient(low = "white", high = "darkgreen", na.value = NA)
 ```
 
 ```{r, message = FALSE, results = FALSE, warning = FALSE, echo = FALSE}
@@ -379,12 +389,13 @@ left_join(rm, p.rm) %>%
 left_join(rm, p.rm) %>% 
   ggplot() +
   geom_sf(aes(geometry = geometry, fill = mediana)) + 
+  labs(x = "", y = "") +
+  theme_bw() +
   theme(axis.text.x = element_blank(), # Eliminar ejes
         axis.ticks.x = element_blank(),
         axis.text.y = element_blank(),
         axis.ticks.y = element_blank()) +
-  scale_fill_gradient(low = "white", high = "darkgreen", na.value = NA) +
-  theme_bw()
+  scale_fill_gradient(low = "white", high = "darkgreen", na.value = NA)
 ```
 
 \newpage
