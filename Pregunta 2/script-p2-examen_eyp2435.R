@@ -718,6 +718,7 @@ var_exp %>%
 a <- as.matrix(salmon)%*%vecp
 suma <- rowSums(a)
 
+plot(suma)
 
 b <- data.frame(a, pobreza)
 
@@ -727,10 +728,28 @@ c = data.frame(b) %>%
     pobreza == "2" ~ 0
   ))
 names(c)
+
+# Regresión logística
 modelo_glm <- glm(pobreza ~ ., 
                   data = c,
                   family = "binomial")
 summary(modelo_glm)
 
+confint(modelo_glm)
+
+library(vcd)
+predicciones <- ifelse(test = modelo_glm$fitted.values > 0.5, yes = 1, no = 0)
+matriz_confusion <- table(modelo_glm$model$pobreza, predicciones,
+                          dnn = c("observaciones", "predicciones"))
+mosaic(matriz_confusion, shade = TRUE, colorize = TRUE,
+       gp = gpar(fill = matrix(c("green3", "red2", "red2", "green3"), 2, 2)))
+
+# Regresión lineal sobre ingresos
+d = cbind(b, ingreso) %>%
+  as.data.frame()
+
+modelo_lm = lm(ingreso ~.,
+               data = d)
+summary(modelo_lm)
 
 
