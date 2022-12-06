@@ -580,7 +580,7 @@ left_join(rm, p.com) %>%
 
 # Intento número 1000 -----------------------------------------------------
 
-load("DatosP2.RData")
+load("Pregunta 2/DatosP2.RData")
 
 datos1[is.na(datos1)] <- 0
 

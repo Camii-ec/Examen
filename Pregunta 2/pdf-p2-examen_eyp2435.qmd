@@ -1,5 +1,5 @@
 ---
-title: "Análisis de la pobreza en Chile"
+title: "Caracterización de la pobreza en Chile mediante las variables indicadoras de la encuesta Casen 2017"
 subtitle: "EYP2435 - Análisis Multivariado"
 format: 
   pdf: 
@@ -29,33 +29,41 @@ tbl-cap-location: bottom
 
 # Descripción de los datos
 
-Para el desarrollo de nuestro análisis, hemos extraído diversas variables de la base de datos `Casen2017.dta`. Entre ellas, podemos destacar las siguientes variables identificadoras o clasificadoras:
+Para el desarrollo de nuestro análisis, utilizaremos las distintas variables disponibles en la categoría de índices de la encuesta socioeconómica Casen 2017, cuyos datos se pueden encontrar en [este link](http://observatorio.ministeriodesarrollosocial.gob.cl/encuesta-casen-2017). Estas corresponden a distintos valores que buscan resumir y englobar las distintas características que resultan importantes para representar la situación socioeconómica de las personas y hogares chilenos.
+
+Así, luego de guardar nuestros datos en el archivo `DatosP2.RData`, las variables con las que trabajaremos son las siguientes:
 
 -   `region`: el identificador de cada región.
--   `folio`: corresponde al identificador único de cada hogar. Recordemos que la Casen hace distinción entre estos y viviendas, por lo que puede haber más de un hogar por vivienda.
 -   `comuna`: sirve para identificar a qué comuna del país pertenece el hogar.
+-   `pobreza`: corresponde a la situación de pobreza por ingresos. Puede ser extremo (1), no extremo (2) o no pobre(0).
+- `numper`: número de personas (sin contar personal doméstico) que viven en el hogar.
+- `esc`: corresponde al nivel de escolaridad alcanzado.
+- `educ`: máximo nivel educacional alcanzado o nivel educacional actual.
+- `depen`: dependencia del establecimiento educacional.
+- `activ`: condición de actividad de la persona. Puede ser ocupado, desocupado o inactivo.
+- `indmat`: indicador de materialidad de la vivienda.
+- `indsan`: indicador de saneamiento en el hogar.
+- `calglobviv`: calidad global de la vivienda.
+- `iae`: el hogar presenta allegamiento externo.
+- `iai`: el hogar presenta allegamiento interno.
+- `hacinamiento`: existe hacinamiento en la vivienda.
+- `ypchautcor`: ingrero individual por persona del hogar corregido.
 
-Luego, nos quedamos con 3 de los indicadores de pobreza que se encuentran en el cuestionario:
-
--   `pobreza`: corresponde a la situación de pobreza por ingresos. Puede ser extremo (1), no extremo (2) o no pobre.
--   `pobreza_multi_4d`: comprendiendo la pobreza multidimensional como un "concepto más allá de la falta de ingresos para la satisfacción de necesidades, sino más bien como personas que sufren carencias en las dimensiones: educación, salud, trabajo, seguridad social, vivienda y nivel de vida en general." (Gerlach V., 2018), corresponde a la pobreza en al menos 4 dimensiones.
--   `pobreza_multi_5d`: en la misma línea, corresponde a la pobreza en al menos 5 de estas dimensiones.
-
-También se utilizaron todas las variables disponibles en la sección de indicadores en el Libro de Códigos Base de Datos (Casen, 2017), las que engeneral corresponden a un resumen de los indicadores obtenidos a través de la encuesta.
-
-Para objetos de este análisis, muchas de la variables `NA` se debe a que por el formulario si respondió cierta pregunta anteriormente, entonces esa pregunta debía estar en blanco. Es por ello que para las variables `NA` se les cambió por el valor 0 como respuesta `No aplica`.
+Las variables `NA` presentes en la base de datos se dan por la manera en que fue diseñada la encuesta. De esta manera, representan la no respuesta o las respuestas en blanco. Es por esto que, en la mayoría de los casos, fueron reemplazadas por el valor 0 o algo similar para indicar que, en realidad, la pregunta no aplica a la persona en cuestión.
 
 # Metodologías
 
-En este informe analizaremos las características socioeconómicas en Chile. Para ello primero analizaremos de manera global las características de las personas según la región.
+Para poder corroborar o descartar nuestra hipótesis, es importante que, en primer lugar, realicemos un análisis exploratorio de nuestros datos. Como en su mayoría contamos con variables categóricas, veremos cómo se comportan éstas en términos de proporción poblacional en cada una de las regiones del país, para ver si resulta más conveniente trabajar con la variable `region` o eliminarla por completo de nuestro análisis.
 
-De esta manera de forma visual observaremos que existe algunas relaciones entre la zona demográfica, actividad laboral, ingresos recibidos, nivel educacional, pobreza, entre otras variables de interés.
+Para poder tener una muestra más balanceada, realizaremos un muestreo aleatorio simple donde seleccionaremos a 20 mil personas en situación de pobreza (ya sea extrema o no) y 20 mil personas en situación de no pobreza.
 
-Además se realizará un análisis factorial (debido a que los datos son categóricos) para reducir la dimensionalidad. Dentro de las variables ocupadas están: `region`, `comuna`, `numper`, `esc`, `educ`, `depen`, `activ`, `indmat`, `indsan`, `iae`, `iai` y `hacinamiento`. En este análisis factorial se determinará el número de factores mediante el Porcentaje de Varianza explicada.
+Luego de esto, llevaremos a cabo un análisis factorial para reducir la dimensionalidad de nuestras variables y determinar cuántos factores necesitaremos para explicar entre un 70% y un 90% de la varianza total. Así, utilizaremos estos factores para modelar una regresión logística que sea capaz de caracterizar a la gente como no pobre (0) o pobre(1). Analizaremos los distintos estadísticos y elementos de esta regresión para determinar qué tan buen modelo es y si cumple con la suficiencia necesaria.
+
+Finalmente, y con estos mismos factores, intentaremos llevar a cabo una regresión lineal donde la variable a predecir sea el ingreso autónomo per cápita del hogar corregido, donde calcularemos los distintos valores que describen la calidad de ajuste del modelo.
 
 # Resultados
 
-En el análisis regional obtendremos los siguientes resultados:
+En el análisis exploratorio regional obtendremos los siguientes resultados:
 
 ## Análisis de pobreza por Región:
 
