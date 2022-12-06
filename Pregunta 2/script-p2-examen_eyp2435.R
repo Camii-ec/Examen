@@ -655,9 +655,25 @@ vecp <- eigen(sigma)$vectors[,1:8]
 
 prop.var <- valp/sum(valp)
 
-plot(prop.var)
+# varianza de clada factor
+cbind(Factores = 1:8,
+      Varianzas = prop.var) %>%
+  as.data.frame() %>%
+  ggplot()+
+  theme_bw() +
+  geom_point(aes(Factores, Varianzas)) +
+  scale_x_continuous(breaks = c(1:8),
+                     labels = 1:8)
 
-cumsum(prop.var)
+# varianza acumulada de cada factor
+cbind(Factores = 1:8,
+      Varianzas = cumsum(prop.var)) %>%
+  as.data.frame() %>%
+  ggplot()+
+  theme_bw() +
+  geom_point(aes(Factores, Varianzas)) +
+  scale_x_continuous(breaks = c(1:8),
+                     labels = 1:8)
 
 correlaciones <- function(valp, vecp, sigma){
   r <- matrix(1, nrow=12)
@@ -689,15 +705,33 @@ data.frame(r) %>% ggplot(aes(x=1:12)) +
                      labels = 1:12)
 
 ## Varianza explicada para cada variable
-rowSums(r^2)
+var_exp = as.data.frame(rowSums(r^2))
+var_exp = var_exp %>%
+  mutate(variable = rownames(var_exp))
+colnames(var_exp) = c("suma", "var")
+
+var_exp %>%
+  ggplot(aes(x = var, y = suma))+
+  geom_bar(stat = "identity", position = "stack", width=0.5, fill = "purple") + 
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
 
 a <- as.matrix(salmon)%*%vecp
 suma <- rowSums(a)
 
 plot(suma)
 
-b <- data.frame(suma, pobreza)
+b <- data.frame(a, pobreza)
 
-b %>% filter(suma > 11500)
+c = data.frame(b) %>%
+  mutate(pobreza = case_when(
+    pobreza == "1" ~ 1,
+    pobreza == "2" ~ 0
+  ))
+names(c)
+modelo_glm <- glm(pobreza ~ ., 
+                  data = c,
+                  family = "binomial")
+summary(modelo_glm)
+
 
 

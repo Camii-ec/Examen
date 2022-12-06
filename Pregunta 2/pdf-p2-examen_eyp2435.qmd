@@ -886,9 +886,113 @@ cbind(Factores = 1:12,
             col = "blue", size = 2)
 ```
 
-Como podemos observar en @fig-15 dado que buscamos una varianza explicada entre un 70% y 90%. Con ese intervalo vemos que con 8 factores tenemos la mayor varianza explicada que se encuentra dentro del rango acordad. Con un total de 8 factores logramos explicar el 86%.
+Como podemos observar en @fig-15 dado que buscamos una varianza explicada entre un 70% y 90%. Con ese intervalo vemos que con 8 factores tenemos la mayor varianza explicada que se encuentra dentro del rango acordado. Con un total de 8 factores logramos explicar el 86%.
 
-Por ello nos quedaremos solamente con 8 factores
+Por ello nos quedaremos solamente con 8 factores. Usando este nuevo modelo, obtendremos la @fig-16 donde se muestran las varianzas y varianzas acumuladas de cada factor.
+
+```{r, include = TRUE, message = FALSE, warning = FALSE, echo = FALSE, results = FALSE}
+# Así, nos quedamos únicamente con 8
+valp <- eigen(sigma)$values[1:8]
+vecp <- eigen(sigma)$vectors[,1:8]
+
+prop.var <- valp/sum(valp)
+```
+
+```{r, message = FALSE, results = FALSE, warning = FALSE, echo = FALSE}
+#| label: fig-16
+#| fig-cap: "Varianza explicada por cada factor"
+#| fig-subcap:
+#|         - "Varianza"
+#|         - "Varianza acumulada"
+#| layout: [[1,1]]
+cbind(Factores = 1:8,
+      Varianzas = prop.var) %>%
+  as.data.frame() %>%
+  ggplot()+
+  theme_bw() +
+  geom_point(aes(Factores, Varianzas)) +
+  scale_x_continuous(breaks = c(1:8),
+                     labels = 1:8)
+
+cbind(Factores = 1:8,
+      Varianzas = cumsum(prop.var)) %>%
+  as.data.frame() %>%
+  ggplot()+
+  theme_bw() +
+  geom_point(aes(Factores, Varianzas)) +
+  scale_x_continuous(breaks = c(1:8),
+                     labels = 1:8)
+```
+
+\newpage
+
+Ya con la cantidad de factores elegidos y la variabilidad explicada de cada uno, ahora podemos analizar las correlaciones de cada factor (o componente) con las variables como muestra la @fig-17
+
+```{r, include = TRUE, message = FALSE, warning = FALSE, echo = FALSE, results = FALSE}
+correlaciones <- function(valp, vecp, sigma){
+  r <- matrix(1, nrow=12)
+  for(i in 1:8){
+    r <- cbind(r, vecp[,i]*sqrt(valp[i]/sigma[i,i]))
+  }
+  
+  return(r[,-1])
+}
+
+r <- correlaciones(valp, vecp, sigma)
+rownames(r) <- colnames(datos1)[-c(13,14)]
+colnames(r) <- paste0("r", 1:8)
+
+```
+
+```{r, message = FALSE, results = FALSE, warning = FALSE, echo = FALSE}
+#| label: fig-17
+#| fig-cap: "Correlaciones entre componentes y variables"
+#| layout: [[-20,60,-20]]
+data.frame(r) %>% ggplot(aes(x=1:12)) +
+  geom_line(aes(y=r1, color = "r1"), size = 1.5) +
+  geom_line(aes(y=r2, color = "r2"), size = 1.5) +
+  geom_line(aes(y=r3, color = "r3"), size = 1.5) +
+  geom_line(aes(y=r4, color = "r4"), size = 1.5) +
+  geom_line(aes(y=r5, color = "r5"), size = 1.5) +
+  geom_line(aes(y=r6, color = "r6"), size = 1.5) +
+  geom_line(aes(y=r7, color = "r7"), size = 1.5) +
+  geom_line(aes(y=r8, color = "r8"), size = 1.5) +
+  theme_bw() +
+  labs(title = "Correlaciones de las componentes principales con las variables",
+       color = "Componentes") +
+  scale_color_manual(values = rainbow(8)) +
+  scale_x_continuous(breaks = c(1:12),
+                     labels = 1:12)
+```
+
+Podemos apreciar de @fig-17 que tenemos muchas variablidad de casos, hay algunos componentes que estan muy corrrelacionados con las variables, como es el caso del primer componente con las primeras 2 variables, el sexto componente con la sexta variable, tomaremos como muy correlacionados aquellos componentes con correlación mayor a 0.5 y menor a -0.5 de la @fig-17. También existen componentes que no estan correlacionados con algunas variables, como es el caso de todos los que se encuentran entre -0.5 y 0.5 de la @fig-17.
+
+Con este modelo podemos observar que tanto explica el modelo a cada variable por separado. Tal como muestra la @fig-18
+
+```{r, message = FALSE, results = FALSE, warning = FALSE, echo = FALSE}
+#| label: fig-18
+#| fig-cap: "variabilidad explicada del modelo por cada variable"
+#| layout: [[-20,60,-20]]
+data.frame(r) %>% ggplot(aes(x=1:12)) +
+  geom_line(aes(y=r1, color = "r1"), size = 1.5) +
+  geom_line(aes(y=r2, color = "r2"), size = 1.5) +
+  geom_line(aes(y=r3, color = "r3"), size = 1.5) +
+  geom_line(aes(y=r4, color = "r4"), size = 1.5) +
+  geom_line(aes(y=r5, color = "r5"), size = 1.5) +
+  geom_line(aes(y=r6, color = "r6"), size = 1.5) +
+  geom_line(aes(y=r7, color = "r7"), size = 1.5) +
+  geom_line(aes(y=r8, color = "r8"), size = 1.5) +
+  theme_bw() +
+  labs(title = "Correlaciones de las componentes principales con las variables",
+       color = "Componentes") +
+  scale_color_manual(values = rainbow(8)) +
+  scale_x_continuous(breaks = c(1:12),
+                     labels = 1:12)
+```
+
+
+
+
 
 \newpage
 
