@@ -745,4 +745,3 @@ mosaic(matriz_confusion, shade = TRUE, colorize = TRUE,
        gp = gpar(fill = matrix(c("green3", "red2", "red2", "green3"), 2, 2)))
 
 
-

@@ -986,7 +986,13 @@ var_exp %>%
   theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
 ```
 
+Ya con todos los datos evaluados y vemos que podemos trabajar con las 8 componentes principales que obtuvimos. Ahora ha llegado el momento de generar una regresión logística con los 8 componentes principales como planteamos en el enunciado.
+
 ## Regresión logística
+
+Utilizando los 8 componentes para poder predecir el índice de pobreza, agrupando a las personas pobres no extremas y pobres extremas en el mismo grupo, pobre.
+
+Al generar un modelo logístico obtenemos los valores de significancia que muestra @tbl-1.
 
 ```{r, echo = FALSE}
 #| label: tbl-1
@@ -1011,6 +1017,9 @@ primodenoruega <- summary(modelo_glm)[["coefficients"]]
 knitr::kable(primodenoruega, align = "c", digits = 3)
 ```
 
+Por @tbl-1 observamos que nuestros 8 componentes principales son significativos para predecir la pobreza. Ahora para cada componentes junto con el intercepto, se calculará el intervalo de confianza para estimarlos.
+Tal como muestra @tbl-2 de esta manera quedan estimados los coeficientes con una confianza del 95%.
+
 \newpage
 
 ```{r, message = FALSE, results = TRUE, warning = FALSE, echo = FALSE}
@@ -1020,6 +1029,8 @@ int_conf = confint(modelo_glm)
 
 knitr::kable(int_conf, align = "c", digits = 3)
 ```
+
+Finalmente se obtendrá la cantidad
 
 ```{r, message = FALSE, results = FALSE, warning = FALSE, echo = FALSE}
 #| label: fig-19
