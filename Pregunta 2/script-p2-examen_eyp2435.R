@@ -744,4 +744,16 @@ matriz_confusion <- table(modelo_glm$model$pobreza, predicciones,
 mosaic(matriz_confusion, shade = TRUE, colorize = TRUE,
        gp = gpar(fill = matrix(c("green3", "red2", "red2", "green3"), 2, 2)))
 
+# Regresión lineal sobre ingresos
+d = data.frame(cbind(a, ingreso))
+
+modelo_lm = lm(ingreso ~.,
+               data = d)
+step(object = modelo_lm, direction = "both", trace = 1)
+
+confint(modelo_lm)
+
+
+
+
 
