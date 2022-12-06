@@ -990,6 +990,30 @@ data.frame(r) %>% ggplot(aes(x=1:12)) +
                      labels = 1:12)
 ```
 
+## Regresión logística
+
+```{r, echo = FALSE}
+#| label: tbl-1
+#| tbl-cap: "Resultados obtenidos"
+a <- as.matrix(salmon)%*%vecp
+suma <- rowSums(a)
+
+b <- data.frame(a, pobreza)
+
+c = data.frame(b) %>%
+  mutate(pobreza = case_when(
+    pobreza == "1" ~ 1,
+    pobreza == "2" ~ 0
+  ))
+
+modelo_glm <- glm(pobreza ~ ., 
+                  data = c,
+                  family = "binomial")
+
+primodenoruega <- summary(modelo_glm)[["coefficients"]]
+
+knitr::kable(primodenoruega, align = "c", digits = 3)
+```
 
 
 

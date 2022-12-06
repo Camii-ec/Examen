@@ -718,7 +718,6 @@ var_exp %>%
 a <- as.matrix(salmon)%*%vecp
 suma <- rowSums(a)
 
-plot(suma)
 
 b <- data.frame(a, pobreza)
 
