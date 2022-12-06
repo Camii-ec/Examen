@@ -71,6 +71,7 @@ library(raster)
 library(rworldxtra)
 library(sf)
 library(ggrepel)
+library(vcd)
 # Mapa
 rm <- chilemapas::mapa_comunas %>% 
   filter(codigo_region == 13)
@@ -973,21 +974,16 @@ Con este modelo podemos observar que tanto explica el modelo a cada variable por
 #| label: fig-18
 #| fig-cap: "variabilidad explicada del modelo por cada variable"
 #| layout: [[-20,60,-20]]
-data.frame(r) %>% ggplot(aes(x=1:12)) +
-  geom_line(aes(y=r1, color = "r1"), size = 1.5) +
-  geom_line(aes(y=r2, color = "r2"), size = 1.5) +
-  geom_line(aes(y=r3, color = "r3"), size = 1.5) +
-  geom_line(aes(y=r4, color = "r4"), size = 1.5) +
-  geom_line(aes(y=r5, color = "r5"), size = 1.5) +
-  geom_line(aes(y=r6, color = "r6"), size = 1.5) +
-  geom_line(aes(y=r7, color = "r7"), size = 1.5) +
-  geom_line(aes(y=r8, color = "r8"), size = 1.5) +
-  theme_bw() +
-  labs(title = "Correlaciones de las componentes principales con las variables",
-       color = "Componentes") +
-  scale_color_manual(values = rainbow(8)) +
-  scale_x_continuous(breaks = c(1:12),
-                     labels = 1:12)
+## Varianza explicada para cada variable
+var_exp = as.data.frame(rowSums(r^2))
+var_exp = var_exp %>%
+  mutate(variable = rownames(var_exp))
+colnames(var_exp) = c("suma", "var")
+
+var_exp %>%
+  ggplot(aes(x = var, y = suma))+
+  geom_bar(stat = "identity", position = "stack", width=0.5, fill = "purple") + 
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
 ```
 
 ## Regresión logística
@@ -1014,6 +1010,28 @@ primodenoruega <- summary(modelo_glm)[["coefficients"]]
 
 knitr::kable(primodenoruega, align = "c", digits = 3)
 ```
+
+\newpage
+
+```{r, message = FALSE, results = TRUE, warning = FALSE, echo = FALSE}
+#| label: tbl-2
+#| tbl-cap: "Intervalos de confianza obtenidos"
+int_conf = confint(modelo_glm)
+
+knitr::kable(int_conf, align = "c", digits = 3)
+```
+
+```{r, message = FALSE, results = FALSE, warning = FALSE, echo = FALSE}
+#| label: fig-19
+#| fig-cap: "Mosaico de predicciones y valores reales del modelo logístico"
+#| layout: [[-20,60,-20]]
+predicciones <- ifelse(test = modelo_glm$fitted.values > 0.5, yes = 1, no = 0)
+matriz_confusion <- table(modelo_glm$model$pobreza, predicciones,
+                          dnn = c("observaciones", "predicciones"))
+mosaic(matriz_confusion, shade = TRUE, colorize = TRUE,
+       gp = gpar(fill = matrix(c("green3", "red2", "red2", "green3"), 2, 2)))
+```
+
 
 
 
