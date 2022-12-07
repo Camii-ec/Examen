@@ -25,7 +25,13 @@ crossref:
 tbl-cap-location: bottom
 ---
 
+# Resumen
+
+En base a los indicadores útiles para análisis obtenidos en la encuesta socioeconómica realizada en el 2017 por la Casen, intentaremos caracterizar a la población pobre y no pobre mediante un análisis factorial. Además, intentaremos utilizar una regresión lineal con estos factores para predecir el ingreso per cápita de los distintos hogares de Chile.
+
 # Introducción
+
+
 
 # Descripción de los datos
 
