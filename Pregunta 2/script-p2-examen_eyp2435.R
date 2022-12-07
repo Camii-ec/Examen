@@ -730,6 +730,10 @@ c = data.frame(b) %>%
   ))
 names(c)
 
+
+# Regresiones -------------------------------------------------------------
+
+
 # Regresión logística
 modelo_glm <- glm(pobreza ~ ., 
                   data = c,
