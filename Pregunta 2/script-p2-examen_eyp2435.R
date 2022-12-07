@@ -580,7 +580,7 @@ left_join(rm, p.com) %>%
 
 # Intento número 1000 -----------------------------------------------------
 
-load("Pregunta 2/DatosP2.RData")
+load("DatosP2.RData")
 
 datos1[is.na(datos1)] <- 0
 
@@ -749,11 +749,96 @@ d = data.frame(cbind(a, ingreso))
 
 modelo_lm = lm(ingreso ~.,
                data = d)
-step(object = modelo_lm, direction = "both", trace = 1)
+pasos = step(object = modelo_lm, direction = "both", trace = 1)
 
+# Generamos otros modelos posibles
+{
+  modelo_lm1 = lm(ingreso ~ .-V1,
+                  data = d)
+  modelo_lm2 = lm(ingreso ~ .-V2,
+                  data = d)
+  modelo_lm3 = lm(ingreso ~ .-V3,
+                  data = d)
+  modelo_lm4 = lm(ingreso ~ .-V4,
+                  data = d)
+  modelo_lm5 = lm(ingreso ~ .-V5,
+                  data = d)
+  modelo_lm6 = lm(ingreso ~ .-V6,
+                  data = d)
+  modelo_lm7 = lm(ingreso ~ .-V7,
+                  data = d)
+  modelo_lm8 = lm(ingreso ~ .-V8,
+                  data = d)
+}
+
+
+AICS = c(AIC(modelo_lm),
+         AIC(modelo_lm1),
+         AIC(modelo_lm2),
+         AIC(modelo_lm3),
+         AIC(modelo_lm4),
+         AIC(modelo_lm5),
+         AIC(modelo_lm6),
+         AIC(modelo_lm7),
+         AIC(modelo_lm8))
+
+compara = cbind(modelo = c("Modelo completo", 
+                           "Modelo -primer comp",
+                           "Modelo -segundo comp",
+                           "Modelo -tercero comp",
+                           "Modelo -cuarto comp",
+                           "Modelo -quinto comp",
+                           "Modelo -sexto comp",
+                           "Modelo -septimo comp",
+                           "Modelo -octavo comp"), 
+                aic = round(AICS, 0)) %>%
+  as.data.frame()
+
+compara$modelo = factor(compara$modelo, 
+                        levels = c("Modelo completo", 
+                                   "Modelo -primer comp",
+                                   "Modelo -segundo comp",
+                                   "Modelo -tercero comp",
+                                   "Modelo -cuarto comp",
+                                   "Modelo -quinto comp",
+                                   "Modelo -sexto comp",
+                                   "Modelo -septimo comp",
+                                   "Modelo -octavo comp"))
+
+compara %>%
+  ggplot()+
+  geom_bar(aes(x = modelo, y = aic), stat = "identity", fill = "blue") +
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
+
+# Se muestra que usar los 8 componentes generan un mayor AIC, y comparamos los coeficientes con los del modelo inicial, vemos que son los mismos
+pasos$coefficients
+modelo_lm$coefficients
+
+
+
+summary(modelo_lm)
 confint(modelo_lm)
 
 
+ggplot(data = d, aes(x = V8, y = modelo_lm$residuals)) +
+  geom_point() +
+  geom_smooth(color = "firebrick") +
+  geom_hline(yintercept = 0) +
+  theme_bw()
 
+qqnorm(modelo_lm$residuals)
+qqline(modelo_lm$residuals, col = "red", lwd = 2)
 
+shapiro.test(modelo_lm$residuals)
+
+which.max(modelo_lm$residuals[c(-"43986", -"89060", -"187069", -"175227", -"169133", -"180192", -"71627", -"179729", -"13582", -"119648")])
+
+shapiro.test(modelo_lm$residuals[c(-89060, -16155)])
+
+library(car)
+outlierTest(modelo_lm)
+
+residuales = dplyr::select(modelo_lm$residuals, -"43986")
+names(modelo_lm$residuals)
+modelo_lm$residuals[-"43986"]
 

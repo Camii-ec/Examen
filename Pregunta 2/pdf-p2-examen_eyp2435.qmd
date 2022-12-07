@@ -1052,6 +1052,127 @@ mosaic(matriz_confusion, shade = TRUE, colorize = TRUE,
 
 \newpage
 
+## Regresión lineal
+
+Ahora usaremos los 8 componentes principales para generar una regresión lineal para poder estimar los ingresos totales. Luego de crear este modelo con los 8 componentes principales, compararemos con modelos sin alguno de estos componentes y compararemos los AIC de los modelos, tal como muestra @fig-20.
+
+```{r, include = TRUE, message = FALSE, warning = FALSE, echo = FALSE, results = FALSE}
+d = data.frame(cbind(a, ingreso))
+
+modelo_lm = lm(ingreso ~.,
+               data = d)
+pasos = step(object = modelo_lm, direction = "both", trace = 1)
+
+# Generamos otros modelos posibles
+
+modelo_lm1 = lm(ingreso ~ .-V1,
+               data = d)
+modelo_lm2 = lm(ingreso ~ .-V2,
+               data = d)
+modelo_lm3 = lm(ingreso ~ .-V3,
+               data = d)
+modelo_lm4 = lm(ingreso ~ .-V4,
+               data = d)
+modelo_lm5 = lm(ingreso ~ .-V5,
+               data = d)
+modelo_lm6 = lm(ingreso ~ .-V6,
+               data = d)
+modelo_lm7 = lm(ingreso ~ .-V7,
+               data = d)
+modelo_lm8 = lm(ingreso ~ .-V8,
+               data = d)
+
+
+
+AICS = c(AIC(modelo_lm),
+         AIC(modelo_lm1),
+         AIC(modelo_lm2),
+         AIC(modelo_lm3),
+         AIC(modelo_lm4),
+         AIC(modelo_lm5),
+         AIC(modelo_lm6),
+         AIC(modelo_lm7),
+         AIC(modelo_lm8))
+
+compara = cbind(modelo = c("Modelo completo", 
+                           "Modelo -primer comp",
+                           "Modelo -segundo comp",
+                           "Modelo -tercero comp",
+                           "Modelo -cuarto comp",
+                           "Modelo -quinto comp",
+                           "Modelo -sexto comp",
+                           "Modelo -septimo comp",
+                           "Modelo -octavo comp"), 
+                aic = round(AICS, 0)) %>%
+  as.data.frame()
+
+compara$modelo = factor(compara$modelo, 
+                        levels = c("Modelo completo", 
+                                   "Modelo -primer comp",
+                                   "Modelo -segundo comp",
+                                   "Modelo -tercero comp",
+                                   "Modelo -cuarto comp",
+                                   "Modelo -quinto comp",
+                                   "Modelo -sexto comp",
+                                   "Modelo -septimo comp",
+                                   "Modelo -octavo comp"))
+
+```
+
+```{r, message = FALSE, results = FALSE, warning = FALSE, echo = FALSE}
+#| label: fig-20
+#| fig-cap: "AIC de los modelos"
+#| layout: [[-20,60,-20]]
+compara %>%
+  ggplot()+
+  geom_bar(aes(x = modelo, y = aic), stat = "identity", fill = "blue") +
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
+```
+
+Según @fig-20, el modelo completo es aquel que presenta menor criterio de información de Akaike (AIC), por lo tanto es correcto utilizar estos 8 componentes.
+
+Analizando los coeficientes de la regresión lineal obtenemos lo visto en @tbl-3.
+
+```{r, echo = FALSE}
+#| label: tbl-3
+#| tbl-cap: "Resultados obtenidos"
+ust <- summary(modelo_lm)[["coefficients"]]
+
+knitr::kable(ust, align = "c", digits = 3)
+```
+
+Viendo @tbl-3 podemos observar que el tercer componente resultó no ser tan significatio como el resto, pero como ya comprobamos, si lo eliminamos aumenta el AIC. Pese a no ser tan significante como el resto. Ahora, ya analizado los coeficientes, vamos a crear un intervalo de confianza para cada coeficiente. A continuación, en @tble-4 se mostrará los intervalos de confianza de cada uno.
+
+```{r, message = FALSE, results = TRUE, warning = FALSE, echo = FALSE}
+#| label: tbl-4
+#| tbl-cap: "Intervalos de confianza obtenidos"
+int_conf = confint(modelo_lm)
+
+knitr::kable(int_conf, align = "c", digits = 3)
+```
+
+Sin embargo, pese a que la cantidad de componentes que genera el modelo es el más eficiente, el modelo no es buen predictor debido a la existencia de valores atípicos. Estos valores atípicos no permiten ajustar el modelo de la mejor manera posible, esto se logra apreciar a travez de la @fig-21.
+
+```{r, message = FALSE, results = FALSE, warning = FALSE, echo = FALSE}
+#| label: fig-21
+#| fig-cap: "Q-Q Plot del modelo"
+#| layout: [[-20,60,-20]]
+qqnorm(modelo_lm$residuals)
+qqline(modelo_lm$residuals, col = "red", lwd = 2)
+```
+
+Con @fig-21, se muestra claramente que existen una cantidad considerable de datos atípicos, los cuales aumentan los residuos del modelo. Tal como analizamos anteriormente, cuando hablamos de ingresos en chile, existe un grupo (concentrado en la comuna de vitacura) el cual tiene ingresos elevados.
+
+\newpage
+
+# Conclusión
+
+Tras realizar un análisis factorial logramos crear 12 factores. De los 12 factores, por criterio de varianza explicada, calculamos que con los 8 primeros factores son capaces de explicar suficiente varianza de los datos. Con esos 8 componentes principales se pudo reducir la dimensionalidad de los datos, y poder crear un modelo logístico que ____________________, el cual los 8 componentes principales resultaron significativos y el modelo fue capaz de predecir de manera muy acertada.
+Además, se comprobó que no es posible realizar un análisis de regresión lineal el cual intente explicar los ingresos totales. Al analizar los ingresos se observa que existe una importante cantidad de 
+
+
+\newpage
+
 # Conclusión
 
 En conclusión, el Emiliano vale pico, pero no tanto como Aravena.
