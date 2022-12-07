@@ -31,7 +31,14 @@ En base a los indicadores útiles para análisis obtenidos en la encuesta socioe
 
 # Introducción
 
+Al momento de realizar sus encuestas, la Casen tiene dos grandes objetivos en mente: el primero, es el de conocer la situación en que se encuentran las personas, sobre todo quienes se encuentran en situación de pobreza o en algún estado vulnerable o que los vuelva políticamente prioritarios (como los adultos mayores, niños, etc.); mientras que el segundo va de la mano con estimar el impacto de los gastos fiscales en el ingreso de los hogares. 
 
+Es por esto que, teniendo en cuenta el primer objetivo de la encuesta, en el presente informe buscaremos caracterizar a las personas de la población, centrándonos específicamente en aquellas que se encuentran en situación de pobreza. De esta manera, nos hemos planteado dos hipótesis que buscaremos desmentir o comprobar por medio del análisis estadístico de los datos:
+
+1. Mediante análisis factorial y de componentes principales, es posible generar un modelo de regresión logística que nos ayude a diferenciar a las personas en situación de pobreza de las que no lo están.
+2. Mediante análisis factorial y de componentes principales, es posible generar un modelo de regresión lineal que nos permita estimar de manera adecuada los ingresos autónomos per cápita de los hogares chilenos.
+
+Así, realizaremos una breve descripción de los datos con los que vamos a trabajar, mencionaremos y justificaremos las metodologías que vamos a utilizar, mostraremos los resultados a los que llegamos y, finalmente, veremos si nuestras ideas estaban en lo cierto o no.
 
 # Descripción de los datos
 
