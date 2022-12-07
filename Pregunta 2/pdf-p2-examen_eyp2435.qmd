@@ -1184,7 +1184,7 @@ Con @fig-21, se muestra claramente que existen una cantidad considerable de dato
 
 Tras realizar un análisis factorial logramos crear 12 factores. De los 12 factores, por criterio de varianza explicada, calculamos que con los 8 primeros factores son capaces de explicar suficiente varianza de los datos. Con esos 8 componentes principales se pudo reducir la dimensionalidad de los datos, y poder crear un modelo logístico que logra caracterizar y, por ende, logra predecir bien qué sectores de la población serán considerados o no dentro de la pobreza. Aquí, los 8 componentes principales resultaron significativos y el modelo fue capaz de predecir de manera muy acertada.
 
-Además, se comprobó que no es posible realizar un análisis de regresión lineal el cual intente explicar los ingreso autónomo per cápita del hogar corregido. Al analizar los ingresos se observa que existe una importante cantidad de 
+Además, se comprobó que no es posible realizar un análisis de regresión lineal, el cual intenta explicar los ingreso autónomo per cápita del hogar corregido en Chile. Al analizar los ingresos se observa que existe una importante cantidad de ingresos muy elevados, los cuales aumentan los residuos del modelo lineal.
 
 
 \newpage

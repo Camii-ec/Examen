@@ -833,16 +833,3 @@ ggplot(data = d, aes(x = V8, y = modelo_lm$residuals)) +
 qqnorm(modelo_lm$residuals)
 qqline(modelo_lm$residuals, col = "red", lwd = 2)
 
-shapiro.test(modelo_lm$residuals)
-
-which.max(modelo_lm$residuals[c(-"43986", -"89060", -"187069", -"175227", -"169133", -"180192", -"71627", -"179729", -"13582", -"119648")])
-
-shapiro.test(modelo_lm$residuals[c(-89060, -16155)])
-
-library(car)
-outlierTest(modelo_lm)
-
-residuales = dplyr::select(modelo_lm$residuals, -"43986")
-names(modelo_lm$residuals)
-modelo_lm$residuals[-"43986"]
-
