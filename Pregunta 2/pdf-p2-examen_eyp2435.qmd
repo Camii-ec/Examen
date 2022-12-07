@@ -1004,7 +1004,7 @@ colnames(var_exp) = c("suma", "var")
 var_exp %>%
   ggplot(aes(x = var, y = suma))+
   geom_bar(stat = "identity", position = "stack", width=0.5, fill = "purple") +
-  theme_bw()
+  theme_bw() +
   theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
 ```
 
@@ -1156,7 +1156,7 @@ ust <- summary(modelo_lm)[["coefficients"]]
 knitr::kable(ust, align = "c", digits = 3)
 ```
 
-Viendo @tbl-3 podemos observar que el tercer componente resultó no ser tan significatio como el resto, pero como ya comprobamos, si lo eliminamos aumenta el AIC. Pese a no ser tan significante como el resto. Ahora, ya analizado los coeficientes, vamos a crear un intervalo de confianza para cada coeficiente. A continuación, en @tble-4 se mostrará los intervalos de confianza de cada uno.
+Viendo @tbl-3 podemos observar que el tercer componente resultó no ser tan significatio como el resto, pero como ya comprobamos, si lo eliminamos aumenta el AIC. Pese a no ser tan significante como el resto. Ahora, ya analizado los coeficientes, vamos a crear un intervalo de confianza para cada coeficiente. A continuación, en @tbl-4 se mostrará los intervalos de confianza de cada uno.
 
 ```{r, message = FALSE, results = TRUE, warning = FALSE, echo = FALSE}
 #| label: tbl-4
@@ -1176,7 +1176,7 @@ qqnorm(modelo_lm$residuals)
 qqline(modelo_lm$residuals, col = "red", lwd = 2)
 ```
 
-Con @fig-21, se muestra claramente que existen una cantidad considerable de datos atípicos, los cuales aumentan los residuos del modelo. Tal como analizamos anteriormente, cuando hablamos de ingresos en chile, existe un grupo (concentrado en la comuna de vitacura) el cual tiene ingresos elevados.
+Con @fig-21, se muestra claramente que existen una cantidad considerable de datos atípicos, los cuales aumentan los residuos del modelo. Tal como analizamos anteriormente, cuando hablamos de ingresos en chile, existe un grupo (concentrado en la comuna de Vitacura) el cual tiene ingresos elevados.
 
 \newpage
 
