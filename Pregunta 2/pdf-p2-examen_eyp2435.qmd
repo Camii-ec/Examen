@@ -1176,7 +1176,7 @@ Además, se comprobó que no es posible realizar un análisis de regresión line
 
 \newpage
 
-# Bibliografía (EDITAR DESPUÉS)
+# Bibliografía
 
 1.  Chung-hong Chan, Geoffrey CH Chan, Thomas J. Leeper, and Jason Becker (2021). rio: A Swiss-army knife for data file I/O. R package version 0.5.29.
 2.  Hijmans R (2022). _raster: Geographic Data Analysis and Modeling_. R package version 3.6-11, <https://CRAN.R-project.org/package=raster>.
