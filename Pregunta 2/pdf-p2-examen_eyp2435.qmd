@@ -282,7 +282,7 @@ left_join(chile, p.region[which(p.region$activ==3),]) %>%
 
 ## Análisis de ingresos por Región:
 
-Para este analisis usaremos 2 medidas de los ingresos, la media de estos y la mediana. Debido a que la media está sesgada por los valores extremos, en este caso las personas que tienen ingresos muy altos afectan al promedio, es por ello que también usaremos la mediana. De @fig-3-1 logramos divisar que la mayor media de los ingresos se encuentra principalmente en la región Metropolitana (XIII) con un ingreso promedio mayor de 400.000 pesos, seguida de la región de Magallanes (XII). Pero analizando la @fig-3-2 donde se presentan las medianas de los ingresos totales de las personas por región podemos ver que la región de Magallanes (XII) presenta mayor mediana de ingresos (más de 240.000 pesos), mientras que la región Metropolitana (XIII) tiene una mediana de ingresos entre 200.000 pesos y 240.000 pesos. Con este caso de la región Metropolitana podemos analizar esta región para tener una visión de lo que pasa al interior de esta.
+Para este analisis usaremos 2 medidas de los ingresos, la media de estos y la mediana. Debido a que la media está sesgada por los valores extremos, en este caso las personas que tienen ingresos muy altos afectan al promedio, es por ello que también usaremos la mediana. De @fig-3-1 logramos divisar que la mayor media de los ingresos se encuentra principalmente en la región Metropolitana (XIII) con un ingreso promedio mayor de 400.000 pesos, seguida de la región de Magallanes (XII). Pero analizando la @fig-3-2 donde se presentan las medianas de los ingreso autónomo per cápita del hogar corregido de las personas por región podemos ver que la región de Magallanes (XII) presenta mayor mediana de ingresos (más de 240.000 pesos), mientras que la región Metropolitana (XIII) tiene una mediana de ingresos entre 200.000 pesos y 240.000 pesos. Con este caso de la región Metropolitana podemos analizar esta región para tener una visión de lo que pasa al interior de esta.
 
 ```{r, include = TRUE, message = FALSE, warning = FALSE, echo = FALSE, results = FALSE}
 datos4 <- datos1 %>% 
@@ -715,7 +715,7 @@ left_join(chile, p.region[which(p.region$educ==10),]) %>%
 
 De @fig-11-1 podemos ver que el mayor porcentaje de personas que completaron estudios profesionales se encuentran concentrada en la región Metropolitana (XIII), seguida de la región de Magallanes (XII) con no más de 10%. Todas las demás regiones tienen un porcentaje menor a 8%.
 
-Finalmente un caso muy interesante de analizar, en @fig-11-2, observaremos el porcentaje de personas que terminaron un postgrado. De esta figura vemos una concentración extrema en la región Metropolitana (XIII), donde hay más de un 2% de personas que completaron un postgrado. Todas las demás regiones tienen menos de un 0.5% de personas con un postgrado completo. De esta información, al igual que los ingresos totales, analizaremos que sucede en la región Metropolitana según comunas.
+Finalmente un caso muy interesante de analizar, en @fig-11-2, observaremos el porcentaje de personas que terminaron un postgrado. De esta figura vemos una concentración extrema en la región Metropolitana (XIII), donde hay más de un 2% de personas que completaron un postgrado. Todas las demás regiones tienen menos de un 0.5% de personas con un postgrado completo. De esta información, al igual que los ingreso autónomo per cápita del hogar corregido, analizaremos que sucede en la región Metropolitana según comunas.
 
 ```{r, message = FALSE, results = FALSE, warning = FALSE, echo = FALSE}
 #| label: fig-11
@@ -1055,7 +1055,7 @@ mosaic(matriz_confusion, shade = TRUE, colorize = TRUE,
 
 ## Regresión lineal
 
-Ahora usaremos los 8 componentes principales para generar una regresión lineal para poder estimar los ingresos totales. Luego de crear este modelo con los 8 componentes principales, compararemos con modelos sin alguno de estos componentes y compararemos los AIC de los modelos, tal como muestra @fig-20.
+Ahora usaremos los 8 componentes principales para generar una regresión lineal para poder estimar los ingreso autónomo per cápita del hogar corregido. Luego de crear este modelo con los 8 componentes principales, compararemos con modelos sin alguno de estos componentes y compararemos los AIC de los modelos, tal como muestra @fig-20.
 
 ```{r, include = TRUE, message = FALSE, warning = FALSE, echo = FALSE, results = FALSE}
 d = data.frame(cbind(a, ingreso))
@@ -1171,7 +1171,7 @@ Con @fig-21, se muestra claramente que existen una cantidad considerable de dato
 
 Tras realizar un análisis factorial logramos crear 12 factores. De los 12 factores, por criterio de varianza explicada, calculamos que con los 8 primeros factores son capaces de explicar suficiente varianza de los datos. Con esos 8 componentes principales se pudo reducir la dimensionalidad de los datos, y poder crear un modelo logístico que logra caracterizar y, por ende, logra predecir bien qué sectores de la población serán considerados o no dentro de la pobreza. Aquí, los 8 componentes principales resultaron significativos y el modelo fue capaz de predecir de manera muy acertada.
 
-Además, se comprobó que no es posible realizar un análisis de regresión lineal el cual intente explicar los ingresos totales. Al analizar los ingresos se observa que existe una importante cantidad de 
+Además, se comprobó que no es posible realizar un análisis de regresión lineal el cual intente explicar los ingreso autónomo per cápita del hogar corregido. Al analizar los ingresos se observa que existe una importante cantidad de 
 
 
 \newpage
