@@ -990,7 +990,8 @@ colnames(var_exp) = c("suma", "var")
 
 var_exp %>%
   ggplot(aes(x = var, y = suma))+
-  geom_bar(stat = "identity", position = "stack", width=0.5, fill = "purple") + 
+  geom_bar(stat = "identity", position = "stack", width=0.5, fill = "purple") +
+  theme_bw()
   theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
 ```
 
@@ -1126,6 +1127,7 @@ compara$modelo = factor(compara$modelo,
 compara %>%
   ggplot()+
   geom_bar(aes(x = modelo, y = aic), stat = "identity", fill = "blue") +
+  theme_bw()+
   theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
 ```
 
@@ -1167,15 +1169,12 @@ Con @fig-21, se muestra claramente que existen una cantidad considerable de dato
 
 # Conclusión
 
-Tras realizar un análisis factorial logramos crear 12 factores. De los 12 factores, por criterio de varianza explicada, calculamos que con los 8 primeros factores son capaces de explicar suficiente varianza de los datos. Con esos 8 componentes principales se pudo reducir la dimensionalidad de los datos, y poder crear un modelo logístico que ____________________, el cual los 8 componentes principales resultaron significativos y el modelo fue capaz de predecir de manera muy acertada.
+Tras realizar un análisis factorial logramos crear 12 factores. De los 12 factores, por criterio de varianza explicada, calculamos que con los 8 primeros factores son capaces de explicar suficiente varianza de los datos. Con esos 8 componentes principales se pudo reducir la dimensionalidad de los datos, y poder crear un modelo logístico que logra caracterizar y, por ende, logra predecir bien qué sectores de la población serán considerados o no dentro de la pobreza. Aquí, los 8 componentes principales resultaron significativos y el modelo fue capaz de predecir de manera muy acertada.
+
 Además, se comprobó que no es posible realizar un análisis de regresión lineal el cual intente explicar los ingresos totales. Al analizar los ingresos se observa que existe una importante cantidad de 
 
 
 \newpage
-
-# Conclusión
-
-En conclusión, el Emiliano vale pico, pero no tanto como Aravena.
 
 # Bibliografía (EDITAR DESPUÉS)
 
